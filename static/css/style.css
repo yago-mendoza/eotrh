@@ -1,0 +1,419 @@
+/* --- Variables Globals i Reset --- */
+:root {
+    --primary-color: #007bff; /* Blau clínic */
+    --secondary-color: #6c757d; /* Gris */
+    --accent-color: #17a2b8; /* Blau verdós per accents */
+    --light-bg: #f8f9fa;
+    --dark-text: #343a40;
+    --medium-text: #6c757d;
+    --border-color: #dee2e6;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --base-font-size: 16px;
+    --border-radius: 4px;
+    --transition-speed: 0.3s;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--base-font-size);
+    line-height: 1.6;
+    background-color: var(--light-bg);
+    color: var(--dark-text);
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 1000px; /* Amplada màxima de l'app */
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Per contenir elements */
+    display: flex;
+    flex-direction: column;
+}
+
+main.content-area {
+    padding: 30px;
+}
+
+/* --- Barra de Progrés --- */
+.progress-bar {
+    background-color: #e9ecef;
+    padding: 10px 30px;
+    border-bottom: 1px solid var(--border-color);
+}
+.progress-bar ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+}
+.progress-bar li.step {
+    color: var(--medium-text);
+    font-size: 0.9em;
+    position: relative;
+    padding-left: 25px;
+    opacity: 0.6;
+}
+.progress-bar li.step span { /* Número del pas */
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    background-color: var(--secondary-color);
+    color: white;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    line-height: 1;
+    transition: background-color var(--transition-speed);
+}
+.progress-bar li.step.active {
+    color: var(--primary-color);
+    font-weight: bold;
+    opacity: 1;
+}
+.progress-bar li.step.active span {
+    background-color: var(--primary-color);
+}
+.progress-bar li.step.completed span { /* Opcional: marcar completats */
+     background-color: var(--success-color);
+}
+
+
+/* --- Estils Generals dels Passos --- */
+.step-content {
+    display: none; /* Ocult per defecte */
+    animation: fadeIn 0.5s ease-in-out;
+}
+.step-content.active {
+    display: block;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.step-header {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+.step-header h2 {
+    text-align: left;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+.step-explanation {
+    font-size: 0.95em;
+    color: var(--medium-text);
+}
+.navigation-buttons {
+    margin-top: 30px;
+    text-align: right;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* --- Botons --- */
+button, input[type="submit"] {
+    background-color: var(--primary-color); color: white; padding: 10px 25px; border: none;
+    border-radius: var(--border-radius); cursor: pointer; font-size: 1em; margin-left: 10px;
+    transition: background-color var(--transition-speed), box-shadow 0.2s ease;
+    font-weight: 500;
+}
+button:hover, input[type="submit"]:hover {
+    background-color: #0056b3;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+button:disabled { background-color: #ccc; cursor: not-allowed; box-shadow: none; }
+button.secondary { background-color: var(--secondary-color); }
+button.secondary:hover { background-color: #5a6268; }
+
+/* Input oculto para la carga de archivos */
+.hidden-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* --- Pas 0: Upload --- */
+.upload-area {
+    display: block; /* Para que funcione bien como label */
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color var(--transition-speed), background-color var(--transition-speed);
+}
+.upload-area:hover,
+.upload-area.dragover {
+    border-color: var(--primary-color);
+    background-color: #f0f8ff; /* Blau molt clar */
+}
+.upload-area .upload-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 15px;
+    opacity: 0.6;
+    pointer-events: none; /* Evita que la imagen interfiera con los clics */
+}
+.upload-area p {
+    color: var(--medium-text);
+    margin-bottom: 0;
+    pointer-events: none; /* Evita que el texto interfiera con los clics */
+}
+.upload-area div {
+    pointer-events: none; /* Asegura que todos los divs internos no interfieran */
+}
+#file-name-display {
+    margin-top: 15px;
+    font-style: italic;
+    color: var(--dark-text);
+}
+
+/* --- Pas 0.5: Loading --- */
+.loading-screen { text-align: center; padding: 50px 0; }
+.loading-spinner { width: 60px; height: 60px; }
+/* Alternativa CSS Spinner */
+/* .css-spinner { ... } */
+.loading-screen p { margin-top: 15px; color: var(--medium-text); font-size: 1.1em;}
+
+/* --- Pas 1: Editor ROI --- */
+.roi-editor-screen .editor-layout { display: flex; gap: 20px; }
+.roi-toolbar {
+    flex: 0 0 80px; /* Amplada fixa per la barra d'eines */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background-color: #f1f1f1;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+.tool-button {
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color var(--transition-speed), border-color var(--transition-speed);
+    width: 50px; /* Amplada fixa */
+    height: 50px; /* Alçada fixa */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0; /* Reset marge botons generals */
+}
+.tool-button img { max-width: 24px; max-height: 24px; opacity: 0.7; }
+.tool-button:hover { background-color: #e9ecef; border-color: #adb5bd; }
+.tool-button.active { background-color: var(--primary-color); border-color: var(--primary-color); }
+.tool-button.active img { filter: brightness(0) invert(1); opacity: 1; } /* Icona blanca */
+.tool-options { font-size: 0.8em; text-align: center; margin-top: -5px; margin-bottom: 5px; }
+.tool-options label { font-size: 0.9em; margin-bottom: 2px; }
+.tool-options input[type="range"] { width: 100%; height: 5px; cursor: pointer;}
+.roi-toolbar hr { width: 80%; border: 0; border-top: 1px solid var(--border-color); margin: 10px 0; }
+.canvas-section { flex-grow: 1; }
+#canvas-wrapper {
+    position: relative;
+    border: 1px solid var(--border-color);
+    background-color: #fff; /* Fons blanc pel canvas */
+    overflow: hidden; /* Per contenir canvas */
+    width: 100%; /* Ocupa l'espai disponible */
+    height: 500px; /* Alçada fixa (o ajustar amb JS) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+#roi-canvas { /* El canvas de Fabric s'ajustarà dins del wrapper */
+    /* Fabric gestiona la mida, assegura't que el JS l'ajusta */
+     pointer-events: auto; /* Ensure canvas receives pointer events */
+}
+.tool-tip { font-size: 0.85em; color: var(--medium-text); margin-top: 10px; text-align: center; }
+
+/* --- Pas 2: Dades Manuals (Tabs) --- */
+.tab-nav { border-bottom: 1px solid var(--border-color); margin-bottom: 25px; }
+.tab-nav button.tab-link {
+    background: none; border: none; padding: 10px 20px; cursor: pointer;
+    font-size: 1em; color: var(--medium-text); position: relative;
+    border-bottom: 3px solid transparent; /* Espai per la línia activa */
+    margin-bottom: -1px; /* Alinea amb la vora inferior */
+    transition: color var(--transition-speed), border-bottom-color var(--transition-speed);
+}
+.tab-nav button.tab-link:hover { color: var(--dark-text); }
+.tab-nav button.tab-link.active {
+    color: var(--primary-color);
+    font-weight: bold;
+    border-bottom-color: var(--primary-color);
+}
+.tab-content { display: none; padding: 20px 5px; /* Espaiat intern contingut tabs */ }
+.tab-content.active { display: block; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
+.info-icon { width: 16px; height: 16px; cursor: help; opacity: 0.6; }
+select.score-select {
+    /* Podríem intentar estils basats en data-score amb JS, o dejar-ho simple */
+     border-left: 4px solid var(--border-color); /* Vora inicial */
+     transition: border-left-color var(--transition-speed);
+}
+/* Estils per puntuació (s'aplicarien amb JS en canviar selecció) */
+select.score-0 { border-left-color: var(--success-color); }
+select.score-1, select.score-2 { border-left-color: var(--warning-color); }
+select.score-3 { border-left-color: orange; }
+select.score-4 { border-left-color: var(--danger-color); }
+
+/* --- Pas 3: Resultats --- */
+.results-screen { /* Estructura básica */ }
+.results-layout { display: flex; gap: 30px; margin-top: 20px; flex-wrap: wrap; }
+.results-summary { flex: 1; min-width: 250px; display: flex; flex-direction: column; align-items: center; }
+.results-details { flex: 2; min-width: 300px; }
+
+/* === Estilos del Termómetro === */
+.thermometer-display {
+    width: 80px; /* Ancho del termómetro */
+    height: 234px; /* Alto total - Reducido */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto; /* Centrado */
+    position: relative; /* Para posicionar elementos internos si es necesario */
+}
+
+.thermometer-track {
+    width: 30px; /* Ancho del tubo */
+    height: 200px; /* Altura del tubo - Reducida */
+    background-color: #e0e0e0; /* Color de fondo del tubo */
+    border-radius: 15px 15px 0 0; /* Bordes redondeados arriba */
+    position: relative;
+    overflow: hidden; /* Para contener el relleno */
+    border: 2px solid #bdbdbd;
+    border-bottom: none;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.thermometer-fill {
+    width: 100%;
+    height: 0%; /* Se ajustará con JS */
+    background-color: var(--success-color); /* Color inicial (verde bajo riesgo) */
+    border-radius: 15px 15px 0 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transition: height 1s ease-out, background-color 0.5s ease;
+}
+
+.thermometer-bulb {
+    width: 70px; /* Diámetro del bulbo */
+    height: 70px; /* Diámetro del bulbo */
+    background-color: var(--success-color); /* Color inicial, debe coincidir con fill */
+    border-radius: 50%;
+    margin-top: -5px; /* Ligeramente solapado con el track */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #bdbdbd;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 5; /* Encima del track */
+    transition: background-color 0.5s ease;
+}
+
+.thermometer-percentage {
+    font-size: 1.8em; /* Tamaño grande para el porcentaje */
+    font-weight: 900; /* Muy bold */
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+/* === Fin Estilos Termómetro === */
+
+.classification-text {
+    text-align: center;
+    font-size: 1.3em;
+    padding: 8px 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+    margin-top: 10px; /* Añadido espacio sobre la clasificación */
+}
+/* Colors per Classificació */
+.low-risk { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;}
+.moderate-risk { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba;}
+.high-risk { background-color: #ffe0b3; color: #8a5300; border: 1px solid #ffd599;} /* Taronja */
+.very-high-risk { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;}
+
+.interpretation-text {
+    background-color: #f1f1f1;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    font-size: 0.95em;
+    color: var(--dark-text);
+    border: 1px solid var(--border-color);
+}
+.score-breakdown { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; margin-top: 20px; }
+.score-item {
+    flex: 1;
+    background-color: var(--light-bg);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    min-width: 150px;
+}
+.score-item h4 {
+    font-size: 1em;
+    color: var(--dark-text);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.score-item p { font-size: 1.1em; font-weight: bold; margin-bottom: 10px; }
+.score-bar-container {
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.score-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease-out;
+}
+.score-bar.clinical { background-color: var(--info-color); }
+.score-bar.radiographic { background-color: var(--warning-color); }
+.score-bar.digital { background-color: var(--accent-color); } /* Un altre color */
+
+.roi-details-results {
+    margin-top: 20px;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+.roi-details-results summary {
+    font-weight: bold; cursor: pointer; padding: 10px 15px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+.roi-details-results[open] summary { border-bottom: 1px solid var(--border-color); }
+.roi-details-results ul { list-style: none; padding: 15px; }
+.roi-details-results li { margin-bottom: 8px; font-size: 0.9em; }
+.error-text { color: var(--danger-color); font-style: italic; }
+
+
+/* Utilitats */
+.hidden { display: none; }
