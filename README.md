@@ -1,10 +1,6 @@
 # Assistent de Diagnòstic Precoç EOTRH
 # Early EOTRH Diagnostic Assistant
 
-[Català](#català) | [English](#english)
-
-## Català
-
 Aquesta aplicació web implementada amb FastAPI proporciona una eina d'ajuda al diagnòstic d'Equine Odontoclastic Tooth Resorption and Hypercementosis (EOTRH) en cavalls, basada en la metodologia descrita per Górski (2022) i Tretow et al. (2025). Integra tres capes d'informació: anàlisi digital automàtica (simplificada), signes clínics manuals i signes radiològics manuals.
 
 **ADVERTÈNCIA IMPORTANT:** L'anàlisi digital automàtica (Capa 1) en aquesta versió web està **simplificada**. A diferència del script original que requeria selecció manual de Regions d'Interès (ROI), aquesta versió analitza la **textura global de la imatge** carregada. Això és una limitació significativa i els resultats d'aquesta capa han d'interpretar-se amb precaució. L'eina està pensada com un suport i **no substitueix el judici clínic veterinari professional**.
@@ -33,7 +29,7 @@ source venv/bin/activate  # En Linux/Mac
 
 3. Instal·la les dependències:
 ```bash
-pip install -r requirements.txt
+pip install pyqt5 opencv-python questionary matplotlib scikit-image EntropyHub fastapi python-multipart jinja2 uvicorn
 ```
 
 ### Execució
