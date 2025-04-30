@@ -8,7 +8,6 @@
     <!-- Libraries JS (CDN) -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script> -->
     <!-- Gauge.js ya no se usa, usamos termómetro CSS -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bernii/gauge.js@1.3.7/dist/gauge.min.js"></script> -->
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
 </head>
@@ -94,9 +93,6 @@
                                 <span id="brush-size-value">3</span>px
                             </div>
                              <!-- Botón Grid Opcional -->
-                             <!-- <button type="button" id="tool-grid" class="tool-button" title="Mostrar/Ocultar Graella (G)">
-                                 <img src="{{ url_for('static', path='img/icon-grid.svg') }}" alt="Grid">
-                             </button> -->
                             <hr>
                              <button type="button" id="tool-undo" class="tool-button" title="Desfer (Ctrl+Z)">
                                  <img src="{{ url_for('static', path='img/icon-undo.svg') }}" alt="Undo">
@@ -141,7 +137,7 @@
                           {% for key, options_list in clinical_options.items() %}
                          <div class="form-group">
                              <label for="{{ key }}">{{ key.replace('_', ' ').capitalize() }}:
-                                <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="Explicació del signe {{ key }}">
+                                <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('info_icon_tooltip', 'More information') }}">
                              </label>
                              <select id="{{ key }}" name="{{ key }}" required class="score-select">
                                  {% for option_text, score in options_list %}
@@ -157,7 +153,7 @@
                           {% for key, options_list in radiographic_options.items() %}
                           <div class="form-group">
                               <label for="{{ key }}">{{ key.replace('_', ' ').capitalize() }}:
-                                 <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="Explicació del signe {{ key }}">
+                                 <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('info_icon_tooltip', 'More information') }}">
                               </label>
                               <select id="{{ key }}" name="{{ key }}" required class="score-select">
                                   {% for option_text, score in options_list %}
@@ -194,19 +190,19 @@
                          <div class="score-breakdown">
                              <div class="score-item">
                                  <!-- Usa textos i18n -->
-                                 <h4>{{ i18n.get("clinical_score_label", "Clinical") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('clinical_score_tooltip', '') }}"></h4>
+                                 <h4>{{ i18n.get("clinical_score_label", "Clinical") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('clinical_score_tooltip', 'Clinical score details') }}"></h4>
                                  <p>{{ results.puntuacio_clinica }} / {{ config.MAX_RAW_SCORES.clinical }}</p>
                                  <div class="score-bar-container"><div class="score-bar clinical" style="width: {{ (results.puntuacio_clinica / config.MAX_RAW_SCORES.clinical * 100)|int }}%;"></div></div>
                              </div>
                              <div class="score-item">
-                                 <h4>{{ i18n.get("radiographic_score_label", "Radiographic") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('radiographic_score_tooltip', '') }}"></h4>
+                                 <h4>{{ i18n.get("radiographic_score_label", "Radiographic") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('radiographic_score_tooltip', 'Radiographic score details') }}"></h4>
                                  <p>{{ results.puntuacio_radio }} / {{ config.MAX_RAW_SCORES.radio }}</p>
                                  <div class="score-bar-container"><div class="score-bar radiographic" style="width: {{ (results.puntuacio_radio / config.MAX_RAW_SCORES.radio * 100)|int }}%;"></div></div>
                              </div>
                              <div class="score-item">
                                  <!-- Tooltip dinámico con valor DistEn -->
                                  {% set digital_tooltip = i18n.get('digital_score_tooltip', '').format(max_dist_en_value=results.max_dist_en_value) %}
-                                 <h4>{{ i18n.get("digital_score_label", "Digital") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ digital_tooltip }}"></h4>
+                                 <h4>{{ i18n.get("digital_score_label", "Digital") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ digital_tooltip if digital_tooltip else i18n.get('digital_score_no_tooltip', 'Digital score details') }}"></h4>
                                  <p>{{ results.puntuacio_digital }} / {{ config.MAX_RAW_SCORES.digital }}</p>
                                  <div class="score-bar-container"><div class="score-bar digital" style="width: {{ (results.puntuacio_digital / config.MAX_RAW_SCORES.digital * 100)|int }}%;"></div></div>
                              </div>
@@ -217,7 +213,7 @@
 
                          {% if results.roi_analysis_details %}
                          <details class="roi-details-results">
-                             <summary>{{ i18n.get("roi_analysis_details_title", "ROI Analysis Details") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('roi_analysis_details_tooltip', '') }}"></summary>
+                             <summary>{{ i18n.get("roi_analysis_details_title", "ROI Analysis Details") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('roi_analysis_details_tooltip', 'Details about individual ROI analysis') }}"></summary>
                              <ul>
                              {% for detail in results.roi_analysis_details %}
                                  <li>

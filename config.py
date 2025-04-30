@@ -48,5 +48,3 @@ LOCALES_PATH: str = "locales" # Ruta a la carpeta con archivos JSON
 
 # --- Form Option Keys (para asegurar consistencia) ---
 # Se podrían definir aquí si se quiere mayor robustez, o confiar en los tests
-# CLINICAL_KEYS = ["fistules", "recessio", "bulbos", "gingivitis", "mossegada"]
-# RADIOGRAPHIC_KEYS = ["dents_afectades", "absents", "forma", "estructura", "superficie"]

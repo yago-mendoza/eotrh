@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from fastapi import FastAPI, Request, Form, File, UploadFile, HTTPException, Depends
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import FastAPI, Request, Form, File, UploadFile, HTTPException
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from pydantic import Json, ValidationError
 import logging
 import json
 from typing import Dict, Any, List, Tuple
