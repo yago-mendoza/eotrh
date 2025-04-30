@@ -1,70 +1,78 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="{{ config.DEFAULT_LOCALE }}"> <!-- Usa el locale de config -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EOTRH Clinic Assistant</title>
-    <!-- Libraries JS (CDN recomanat per simplicitat) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bernii/gauge.js@1.3.7/dist/gauge.min.js"></script>
+    <!-- Usa título desde i18n -->
+    <title>{{ i18n.get("app_title", "EOTRH Assistant") }}</title>
+    <!-- Libraries JS (CDN) -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script> -->
+    <!-- Gauge.js ya no se usa, usamos termómetro CSS -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bernii/gauge.js@1.3.7/dist/gauge.min.js"></script> -->
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
 </head>
 <body>
     <div class="app-container">
-        <!-- Barra de Progrés -->
+        <!-- Logo y Título App -->
+        <header class="app-header">
+             <!-- Logo -->
+             <img src="{{ url_for('static', path='assets/logo.png') }}"
+                  alt="{{ i18n.get('logo_alt_text', 'App Logo') }}"
+                  class="app-logo">
+            <h1>{{ i18n.get("app_title", "EOTRH Clinic Assistant") }}</h1>
+        </header>
+
+        <!-- Barra de Progrés (usa textos i18n) -->
         <nav class="progress-bar">
             <ul>
-                <li id="progress-step-1" class="step active"><span>1</span> Pujar Imatge</li>
-                <li id="progress-step-2" class="step"><span>2</span> Edició ROI</li>
-                <li id="progress-step-3" class="step"><span>3</span> Dades Manuals</li>
-                <li id="progress-step-4" class="step"><span>4</span> Resultats</li>
+                <li id="progress-step-1" class="step active"><span>1</span> {{ i18n.get("progress_step1", "Upload") }}</li>
+                <li id="progress-step-2" class="step"><span>2</span> {{ i18n.get("progress_step2", "ROI Edit") }}</li>
+                <li id="progress-step-3" class="step"><span>3</span> {{ i18n.get("progress_step3", "Manual Data") }}</li>
+                <li id="progress-step-4" class="step"><span>4</span> {{ i18n.get("progress_step4", "Results") }}</li>
             </ul>
         </nav>
 
         <main class="content-area">
-            <!-- Contenidor del formulari (pot englobar tots els passos o només els necessaris) -->
-            <form id="diagnosis-form" action="/calculate" method="post" enctype="multipart/form-data">
-                <!-- Camp ocult per dades ROI -->
+            <!-- Mensaje de Error Global (opcional) -->
+            <div id="global-error-message" class="error-message" style="display: none;"></div>
+
+            <!-- Formulario principal -->
+            <form id="diagnosis-form" action="{{ url_for('handle_calculation') }}" method="post" enctype="multipart/form-data">
+                <!-- Campo oculto ROI -->
                 <input type="hidden" id="roi_data" name="roi_data" value="[]">
 
-                <!-- =========== PAS 0: Benvinguda / Pujar Imatge =========== -->
-                <div id="step-upload" class="step-content active">
+                <!-- PAS 0: Upload -->
+                <div id="step-upload" class="step-content {% if not results %}active{% endif %}">
                     <header class="step-header">
-                        <h2>Benvingut/da a l'Assistent de Diagnòstic EOTRH</h2>
+                        <h2>{{ i18n.get("welcome_title", "Welcome") }}</h2>
                         <p class="step-explanation">
-                            {{ explanations.upload }}
+                            {{ explanations.upload }} <!-- Texto viene del contexto -->
                         </p>
                     </header>
-                    
-                    <!-- Input oculto (fuera del área de carga) -->
                     <input type="file" id="image" name="image" accept="image/jpeg, image/png, image/bmp, image/tiff" required class="hidden-input">
-                    
-                    <!-- Label asociado al input (todo el área de carga) -->
                     <label for="image" class="upload-area" id="upload-zone">
-                        <img src="{{ url_for('static', path='img/icon-upload.svg') }}" alt="Pujar" class="upload-icon">
-                        <p>Arrossega aquí la radiografia o <strong>fes clic per seleccionar</strong></p>
+                        <img src="{{ url_for('static', path='img/icon-upload.svg') }}" alt="Upload Icon" class="upload-icon">
+                        <!-- Usa raw para permitir <strong> -->
+                        <p>{{ i18n.get("upload_prompt", "Drag or click") | safe }}</p>
                         <div id="file-name-display"></div>
-                        <!-- Contenidor per la miniatura de la imatge -->
                         <div id="image-preview-container" style="display: none; margin-top: 15px; text-align: center;"></div>
                     </label>
-                    
                     <div class="navigation-buttons">
-                        <button type="button" id="start-analysis-button" disabled>Iniciar Anàlisi</button>
+                        <button type="button" id="start-analysis-button" disabled>{{ i18n.get("start_analysis_button", "Start Analysis") }}</button>
                     </div>
                 </div>
 
-                <!-- =========== PAS 0.5: Càrrega (Spinner) =========== -->
+                <!-- PAS 0.5: Loading -->
                 <div id="step-loading" class="step-content loading-screen">
-                     <img src="{{ url_for('static', path='img/loading.gif') }}" alt="Carregant..." class="loading-spinner">
-                    <!-- <div class="css-spinner"></div> --> <!-- Alternativa CSS -->
-                    <p>Processant imatge...</p>
+                     <img src="{{ url_for('static', path='img/loading.gif') }}" alt="Loading..." class="loading-spinner">
+                    <p>{{ i18n.get("loading_message", "Processing image...") }}</p>
                 </div>
 
-                <!-- =========== PAS 1: Editor ROI =========== -->
+                <!-- PAS 1: Editor ROI -->
                 <div id="step-roi-editor" class="step-content roi-editor-screen">
                      <header class="step-header">
-                        <h2>Editor de Regions d'Interès (ROI)</h2>
+                        <h2>{{ i18n.get("roi_editor_title", "ROI Editor") }}</h2>
                         <p class="step-explanation">
                             {{ explanations.roi }}
                         </p>
@@ -72,91 +80,89 @@
                     <div class="editor-layout">
                         <aside class="roi-toolbar">
                              <button type="button" id="tool-select" class="tool-button active" title="Seleccionar/Moure (S)">
-                                 <img src="{{ url_for('static', path='img/icon-select.svg') }}" alt="Seleccionar">
+                                 <img src="{{ url_for('static', path='img/icon-select.svg') }}" alt="Select">
                              </button>
                             <button type="button" id="tool-polygon" class="tool-button" title="Dibuixar Polígon (P)">
-                                <img src="{{ url_for('static', path='img/icon-polygon.svg') }}" alt="Polígon">
+                                <img src="{{ url_for('static', path='img/icon-polygon.svg') }}" alt="Polygon">
                             </button>
                             <button type="button" id="tool-freehand" class="tool-button" title="Dibuix Lliure (F)">
-                                <img src="{{ url_for('static', path='img/icon-freehand.svg') }}" alt="Llapis">
+                                <img src="{{ url_for('static', path='img/icon-freehand.svg') }}" alt="Freehand">
                             </button>
                             <div class="tool-options" id="freehand-options" style="display:none;">
                                 <label for="brush-size">Gruix:</label>
                                 <input type="range" id="brush-size" min="1" max="20" value="3">
                                 <span id="brush-size-value">3</span>px
                             </div>
-                             <button type="button" id="tool-grid" class="tool-button" title="Mostrar/Ocultar Graella (G)">
-                                 <img src="{{ url_for('static', path='img/icon-grid.svg') }}" alt="Graella">
-                             </button>
+                             <!-- Botón Grid Opcional -->
+                             <!-- <button type="button" id="tool-grid" class="tool-button" title="Mostrar/Ocultar Graella (G)">
+                                 <img src="{{ url_for('static', path='img/icon-grid.svg') }}" alt="Grid">
+                             </button> -->
                             <hr>
                              <button type="button" id="tool-undo" class="tool-button" title="Desfer (Ctrl+Z)">
-                                 <img src="{{ url_for('static', path='img/icon-undo.svg') }}" alt="Desfer">
+                                 <img src="{{ url_for('static', path='img/icon-undo.svg') }}" alt="Undo">
                              </button>
                              <button type="button" id="tool-redo" class="tool-button" title="Refer (Ctrl+Y)">
-                                 <img src="{{ url_for('static', path='img/icon-redo.svg') }}" alt="Refer">
+                                 <img src="{{ url_for('static', path='img/icon-redo.svg') }}" alt="Redo">
                              </button>
                             <button type="button" id="tool-delete" class="tool-button" title="Esborrar Seleccionat (Supr)">
-                                <img src="{{ url_for('static', path='img/icon-delete.svg') }}" alt="Esborrar">
+                                <img src="{{ url_for('static', path='img/icon-delete.svg') }}" alt="Delete">
                             </button>
                         </aside>
                         <section class="canvas-section">
                             <div id="canvas-wrapper">
-                                <!-- La graella es pot afegir com a fons CSS o dibuixada al canvas -->
                                 <canvas id="roi-canvas"></canvas>
                             </div>
                              <div id="polygon-help-roi" class="tool-tip" style="display: none;">
-                                 Feu clic per afegir punts. Doble clic o clic al primer punt per tancar.
+                                 {{ i18n.get("polygon_tooltip", "Click to add points...") }}
                              </div>
                         </section>
                     </div>
                      <div class="navigation-buttons">
-                         <button type="button" class="secondary" onclick="navigateStep('step-upload')">Tornar</button>
-                        <button type="button" id="confirm-rois-button">Confirmar ROIs i Continuar</button>
+                         <button type="button" class="secondary" onclick="navigateStep('step-upload')">{{ i18n.get("back_to_upload_button", "Back to Upload") }}</button>
+                        <button type="button" id="confirm-rois-button">{{ i18n.get("confirm_rois_button", "Confirm ROIs") }}</button>
                     </div>
                 </div>
 
-                <!-- =========== PAS 2: Dades Manuals (Tabs) =========== -->
+                <!-- PAS 2: Dades Manuals -->
                 <div id="step-manual-data" class="step-content">
                     <header class="step-header">
-                        <h2>Avaluació Manual</h2>
+                        <h2>{{ i18n.get("manual_data_title", "Manual Evaluation") }}</h2>
                          <p class="step-explanation">
                             {{ explanations.manual }}
                          </p>
                     </header>
-                    <!-- Navegació per Pestanyes -->
                     <div class="tab-nav">
-                        <button type="button" class="tab-link active" onclick="openTab(event, 'tab-clinical')">Signes Clínics</button>
-                        <button type="button" class="tab-link" onclick="openTab(event, 'tab-radiographic')">Signes Radiològics</button>
+                        <button type="button" class="tab-link active" onclick="openTab(event, 'tab-clinical')">{{ i18n.get("tab_clinical", "Clinical Signs") }}</button>
+                        <button type="button" class="tab-link" onclick="openTab(event, 'tab-radiographic')">{{ i18n.get("tab_radiographic", "Radiographic Signs") }}</button>
                     </div>
 
-                    <!-- Contingut Pestanyes (similar a abans, però sense emojis i amb classes per estil JS si cal) -->
-                     <div id="tab-clinical" class="tab-content" style="display: block;">
-                         <h3>Signes Clínics (Tretow et al., 2025)</h3>
-                         <!-- ... Formulari clínic (opcions sense emojis) ... -->
-                          {% for key, options in clinical_options.items() %}
+                     <div id="tab-clinical" class="tab-content active" style="display: block;"> <!-- Añadido active y display block inicial -->
+                         <h3>{{ i18n.get("clinical_signs_subtitle", "Clinical Signs") }}</h3>
+                          {% for key, options_list in clinical_options.items() %}
                          <div class="form-group">
                              <label for="{{ key }}">{{ key.replace('_', ' ').capitalize() }}:
                                 <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="Explicació del signe {{ key }}">
                              </label>
                              <select id="{{ key }}" name="{{ key }}" required class="score-select">
-                                 {% for option_text, score in options %} <!-- Ara passem text i puntuació separats -->
-                                     <option value="{{ option_text }} ({{score}} punts)" data-score="{{ score }}">{{ option_text }} ({{ score }} punts)</option>
+                                 {% for option_text, score in options_list %}
+                                     <!-- **CAMBIO CLAVE: value="{{ score }}"** -->
+                                     <option value="{{ score }}" data-score="{{ score }}">{{ option_text }} ({{ score }} punts)</option>
                                  {% endfor %}
                              </select>
                          </div>
                          {% endfor %}
                      </div>
                      <div id="tab-radiographic" class="tab-content">
-                          <h3>Signes Radiològics (Tretow et al., 2025)</h3>
-                         <!-- ... Formulari radiològic (opcions sense emojis) ... -->
-                          {% for key, options in radiographic_options.items() %}
+                          <h3>{{ i18n.get("radiographic_signs_subtitle", "Radiographic Signs") }}</h3>
+                          {% for key, options_list in radiographic_options.items() %}
                           <div class="form-group">
                               <label for="{{ key }}">{{ key.replace('_', ' ').capitalize() }}:
                                  <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="Explicació del signe {{ key }}">
                               </label>
                               <select id="{{ key }}" name="{{ key }}" required class="score-select">
-                                  {% for option_text, score in options %}
-                                      <option value="{{ option_text }} ({{score}} punts)" data-score="{{ score }}">{{ option_text }} ({{ score }} punts)</option>
+                                  {% for option_text, score in options_list %}
+                                     <!-- **CAMBIO CLAVE: value="{{ score }}"** -->
+                                      <option value="{{ score }}" data-score="{{ score }}">{{ option_text }} ({{ score }} punts)</option>
                                   {% endfor %}
                               </select>
                           </div>
@@ -164,19 +170,19 @@
                      </div>
 
                      <div class="navigation-buttons">
-                         <button type="button" class="secondary" onclick="navigateStep('step-roi-editor')">Tornar a Edició ROI</button>
-                        <button type="submit" id="calculate-button">Calcular Diagnòstic</button>
+                         <button type="button" class="secondary" onclick="navigateStep('step-roi-editor')">{{ i18n.get("back_to_roi_button", "Back to ROI Edit") }}</button>
+                        <!-- Cambiado a type="submit" -->
+                        <button type="submit" id="calculate-button">{{ i18n.get("calculate_button", "Calculate Diagnosis") }}</button>
                     </div>
                 </div>
 
-            </form> <!-- Fi del formulari -->
+            </form> <!-- Fin del formulario -->
 
-            <!-- =========== PAS 3: Resultats =========== -->
-             <!-- El backend ha de passar "results" quan existeixin -->
+            <!-- PAS 3: Resultats -->
              {% if results %}
-            <div id="step-results" class="step-content results-screen active"> <!-- Mostra si hi ha resultats -->
+            <div id="step-results" class="step-content results-screen active"> <!-- Añadido active si hay results -->
                  <header class="step-header">
-                     <h2>Resultat de l'Avaluació Integrada</h2>
+                     <h2>{{ i18n.get("results_title", "Results") }}</h2>
                      <p class="step-explanation">
                         {{ explanations.results }}
                      </p>
@@ -184,34 +190,44 @@
 
                  <div class="results-layout">
                      <section class="results-details">
-                         <h3>Desglossament de Puntuacions</h3>
+                         <h3>{{ i18n.get("score_breakdown_title", "Score Breakdown") }}</h3>
                          <div class="score-breakdown">
                              <div class="score-item">
-                                 <h4>Clínica <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="Basada en observacions directes del pacient."></h4>
-                                 <p>{{ results.puntuacio_clinica }} / 17</p>
-                                 <div class="score-bar-container"><div class="score-bar clinical" style="width: {{ (results.puntuacio_clinica / 17 * 100)|int }}%;"></div></div>
+                                 <!-- Usa textos i18n -->
+                                 <h4>{{ i18n.get("clinical_score_label", "Clinical") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('clinical_score_tooltip', '') }}"></h4>
+                                 <p>{{ results.puntuacio_clinica }} / {{ config.MAX_RAW_SCORES.clinical }}</p>
+                                 <div class="score-bar-container"><div class="score-bar clinical" style="width: {{ (results.puntuacio_clinica / config.MAX_RAW_SCORES.clinical * 100)|int }}%;"></div></div>
                              </div>
                              <div class="score-item">
-                                 <h4>Radiològica <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="Basada en signes observats a la radiografia."></h4>
-                                 <p>{{ results.puntuacio_radio }} / 14</p>
-                                 <div class="score-bar-container"><div class="score-bar radiographic" style="width: {{ (results.puntuacio_radio / 14 * 100)|int }}%;"></div></div>
+                                 <h4>{{ i18n.get("radiographic_score_label", "Radiographic") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('radiographic_score_tooltip', '') }}"></h4>
+                                 <p>{{ results.puntuacio_radio }} / {{ config.MAX_RAW_SCORES.radio }}</p>
+                                 <div class="score-bar-container"><div class="score-bar radiographic" style="width: {{ (results.puntuacio_radio / config.MAX_RAW_SCORES.radio * 100)|int }}%;"></div></div>
                              </div>
                              <div class="score-item">
-                                 <h4>Digital <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="Anàlisi de textura per computador de les ROIs seleccionades (Max DistEn2D: {{ results.max_dist_en_value }})."></h4>
-                                 <p>{{ results.puntuacio_digital }} / 10</p>
-                                 <div class="score-bar-container"><div class="score-bar digital" style="width: {{ (results.puntuacio_digital / 10 * 100)|int }}%;"></div></div>
+                                 <!-- Tooltip dinámico con valor DistEn -->
+                                 {% set digital_tooltip = i18n.get('digital_score_tooltip', '').format(max_dist_en_value=results.max_dist_en_value) %}
+                                 <h4>{{ i18n.get("digital_score_label", "Digital") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ digital_tooltip }}"></h4>
+                                 <p>{{ results.puntuacio_digital }} / {{ config.MAX_RAW_SCORES.digital }}</p>
+                                 <div class="score-bar-container"><div class="score-bar digital" style="width: {{ (results.puntuacio_digital / config.MAX_RAW_SCORES.digital * 100)|int }}%;"></div></div>
                              </div>
                          </div>
                          <p class="interpretation-text">
-                             {{ results.interpretacio }}
+                             {{ results.interpretacio }} <!-- Texto ya viene de i18n vía backend -->
                          </p>
 
                          {% if results.roi_analysis_details %}
                          <details class="roi-details-results">
-                             <summary>Detalls Anàlisi ROI <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="Resultat de l'anàlisi de textura per a cada regió seleccionada."></summary>
+                             <summary>{{ i18n.get("roi_analysis_details_title", "ROI Analysis Details") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('roi_analysis_details_tooltip', '') }}"></summary>
                              <ul>
                              {% for detail in results.roi_analysis_details %}
-                                 <li>ROI {{ detail.roi_index }}: DistEn2D = {{ detail.dist_en if detail.dist_en is not none else 'N/A' }} {% if detail.error %}<span class="error-text">(Error: {{ detail.error }})</span>{% endif %}</li>
+                                 <li>
+                                     <!-- Texto i18n con placeholders -->
+                                     {% set dist_en_text = detail.dist_en if detail.dist_en is not none else i18n.get('roi_analysis_na', 'N/A') %}
+                                     {{ i18n.get('roi_analysis_item', 'ROI {roi_index}: DistEn2D = {dist_en}').format(roi_index=detail.roi_index, dist_en=dist_en_text) }}
+                                     {% if detail.error %}
+                                         <span class="error-text">{{ i18n.get('roi_analysis_error', '(Error: {error})').format(error=detail.error) }}</span>
+                                     {% endif %}
+                                 </li>
                              {% endfor %}
                              </ul>
                          </details>
@@ -219,32 +235,44 @@
                      </section>
 
                      <section class="results-summary">
-                         <h3>Puntuació Global</h3>
-                         <div class="thermometer-display" data-score="{{ results.puntuacio_total_integrada }}" data-max="41">
+                         <h3>{{ i18n.get("integrated_score_title", "Global Score") }}</h3>
+                          <!-- Termómetro -->
+                         <div class="thermometer-display" data-score="{{ results.puntuacio_total_integrada }}" data-max="{{ config.MAX_INTEGRATED_SCORE }}">
                              <div class="thermometer-track">
                                  <div class="thermometer-fill"></div>
                              </div>
                              <div class="thermometer-bulb">
-                                 <div class="thermometer-percentage">{{ (results.puntuacio_total_integrada / 41 * 100)|round|int }}%</div>
+                                 <div class="thermometer-percentage">{{ (results.puntuacio_total_integrada / config.MAX_INTEGRATED_SCORE * 100)|round|int }}%</div>
                              </div>
                          </div>
+                         <!-- Clasificación (texto ya viene de i18n) -->
                          <p class="classification-text" id="classification-text-id">
-                            <strong>Risc: {{ results.classificacio }}</strong>
+                            <strong>{{ i18n.get("classification_label", "Risk:") }} {{ results.classificacio }}</strong>
                          </p>
                      </section>
                  </div>
 
                  <div class="navigation-buttons">
-                    <button type="button" onclick="window.location.href='/'">Iniciar Nova Avaluació</button>
+                    <!-- Botón para volver al inicio -->
+                    <button type="button" onclick="window.location.href='{{ url_for('read_root') }}';">{{ i18n.get("new_evaluation_button", "New Evaluation") }}</button>
                  </div>
             </div>
              {% endif %}
 
         </main>
+
+        <footer class="app-footer">
+            <p>© {{ now().year }} Desenvolupament de software independent. Version 1.1</p>
+        </footer>
+
     </div> <!-- /app-container -->
 
-    <!-- Scripts JS (al final per rendiment) -->
-    <script src="{{ url_for('static', path='/js/roi_editor.js') }}"></script>
+    <!-- Scripts JS (al final) -->
+    <!-- Primero Fabric.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+
+    <!-- Luego nuestra lógica principal y del editor (AHORA SOLO app.js) -->
     <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+
 </body>
 </html>
