@@ -1,51 +1,6 @@
 # Assistent de Diagnòstic Precoç EOTRH
 # Early EOTRH Diagnostic Assistant
 
-Aquesta aplicació web implementada amb FastAPI proporciona una eina d'ajuda al diagnòstic d'Equine Odontoclastic Tooth Resorption and Hypercementosis (EOTRH) en cavalls, basada en la metodologia descrita per Górski (2022) i Tretow et al. (2025). Integra tres capes d'informació: anàlisi digital automàtica (simplificada), signes clínics manuals i signes radiològics manuals.
-
-**ADVERTÈNCIA IMPORTANT:** L'anàlisi digital automàtica (Capa 1) en aquesta versió web està **simplificada**. A diferència del script original que requeria selecció manual de Regions d'Interès (ROI), aquesta versió analitza la **textura global de la imatge** carregada. Això és una limitació significativa i els resultats d'aquesta capa han d'interpretar-se amb precaució. L'eina està pensada com un suport i **no substitueix el judici clínic veterinari professional**.
-
-### Requisits del Sistema
-
-- Python 3.9 o superior
-- pip (gestor de paquets de Python)
-- 2GB RAM mínim
-- 500MB espai en disc
-
-### Instal·lació
-
-1. Clona el repositori:
-```bash
-git clone https://github.com/your-username/eortrh_diagnosis_app.git
-cd eortrh_diagnosis_app
-```
-
-2. Crea un entorn virtual:
-```bash
-python -m venv venv
-source venv/bin/activate  # En Linux/Mac
-.\venv\Scripts\activate   # En Windows
-```
-
-3. Instal·la les dependències:
-```bash
-pip install pyqt5 opencv-python questionary matplotlib scikit-image EntropyHub fastapi python-multipart jinja2 uvicorn
-```
-
-### Execució
-
-1. Inicia el servidor:
-```bash
-uvicorn app.main:app --reload
-```
-
-2. Obre el navegador i accedeix a:
-```
-http://localhost:8000
-```
-
-## English
-
 This FastAPI web application provides a diagnostic aid tool for Equine Odontoclastic Tooth Resorption and Hypercementosis (EOTRH) in horses, based on the methodology described by Górski (2022) and Tretow et al. (2025). It integrates three layers of information: automated digital analysis (simplified), manual clinical signs, and manual radiological signs.
 
 **IMPORTANT WARNING:** The automated digital analysis (Layer 1) in this web version is **simplified**. Unlike the original script that required manual selection of Regions of Interest (ROI), this version analyzes the **global texture of the uploaded image**. This is a significant limitation and the results from this layer should be interpreted with caution. The tool is intended as support and **does not replace professional veterinary clinical judgment**.
@@ -73,16 +28,33 @@ source venv/bin/activate  # On Linux/Mac
 ```
 
 3. Install dependencies:
+
+   This project relies on several Python libraries. Here's a breakdown of the key ones:
+
+   **Core Web Framework & Server:**
+   *   `fastapi`: A modern, fast (high-performance) web framework for building APIs.
+   *   `uvicorn`: A lightning-fast ASGI (`Asynchronous Server Gateway Interface`) server, used to **run** the FastAPI application.
+   *   `jinja2`: A templating engine used to render the HTML frontend.
+   *   `python-multipart`: Required by FastAPI to handle file uploads (like the X-ray images).
+
+   **Image Analysis & Scientific Computing:**
+   *   `opencv-python`: A powerful library for computer vision tasks, used here for image processing.
+   *   `scikit-image`: Another image processing library providing algorithms for segmentation, filtering, etc.
+   *   `EntropyHub`: A toolkit for calculating entropy measures, likely used for texture analysis.
+
 ```bash
-pip install -r requirements.txt
+pip install fastapi uvicorn jinja2 python-multipart opencv-python scikit-image EntropyHub
 ```
 
 ### Running the Application
 
 1. Start the server:
 ```bash
-uvicorn app.main:app --reload
+uvicorn main:app --reload
 ```
+   This command starts the `uvicorn` development server:
+   *   `main:app`: Tells `uvicorn` where to find the FastAPI application object. It looks for a variable named `app` inside the `main.py` file.
+   *   `--reload`: Enables auto-reload. The server will automatically restart whenever it detects changes in the source code, which is very convenient during development.
 
 2. Open your browser and navigate to:
 ```
@@ -92,26 +64,40 @@ http://localhost:8000
 ## Project Structure
 
 ```
-eortrh_diagnosis_app/
-├── app/
-│   ├── main.py           # Main application file
-│   ├── models/           # Data models
-│   ├── routers/          # API routes
-│   ├── static/           # Static files (CSS, JS)
-│   └── templates/        # HTML templates
-├── tests/                # Test files
-├── requirements.txt      # Project dependencies
-└── README.md            # This file
+eotrh_diagnosis_app/
+├── .git/                 # Directorio de Git (ignorado generalmente)
+├── .gitignore            # Archivos ignorados por Git
+├── __pycache__/          # Caché de Python (ignorado generalmente)
+├── config.py             # Archivo de configuración
+├── locales/              # Archivos de internacionalización
+│   └── ca.json
+├── main.py               # Archivo principal de la aplicación FastAPI
+├── README.md             # Archivo README
+├── schemas.py            # Definiciones de esquemas (Pydantic, etc.)
+├── services/             # Lógica de negocio o servicios
+│   ├── __init__.py
+│   ├── __pycache__/
+│   ├── image_analysis.py
+│   ├── options.py
+│   └── scoring.py
+├── static/               # Archivos estáticos para la web
+│   ├── assets/           # (Contenido no listado)
+│   ├── css/              # (Contenido no listado)
+│   ├── img/              # (Contenido no listado)
+│   └── js/               # (Contenido no listado)
+├── templates/            # Plantillas HTML (Jinja2, etc.)
+│   └── index.html
+├── utils/                # Funciones de utilidad
+│   ├── __init__.py
+│   ├── __pycache__/
+│   └── i18n.py
+└── venv/                 # Entorno virtual de Python (ignorado generalmente)
+
 ```
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Contributors
-
-- [Your Name]
-- [Other Contributors]
 
 ## Citation
 
