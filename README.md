@@ -101,6 +101,27 @@ eotrh_diagnosis_app/
 
 ```
 
+## Arquitectura y Funcionamiento Técnico
+
+### Tecnologías Backend
+- **FastAPI**: Framework principal que gestiona rutas, validación y API REST
+- **Uvicorn**: Servidor ASGI para ejecutar la aplicación
+- **Jinja2**: Motor de plantillas para renderizar HTML
+- **OpenCV + scikit-image**: Procesamiento y análisis de imágenes radiográficas
+- **EntropyHub**: Cálculo de medidas de entropía para análisis de textura
+- **Pydantic**: Validación de datos y definición de esquemas
+
+### Tecnologías Frontend
+- **Vanilla JavaScript**: Interacción con API y manipulación del DOM
+- **Fetch API**: Comunicación con endpoints del backend
+- **Chart.js**: Visualización gráfica de resultados del análisis
+
+### Interacción Backend-Frontend
+1. **Frontend** envía imágenes y datos clínicos mediante `fetch` a `/api/analyze`
+2. **Backend** procesa la imagen con OpenCV/scikit-image y aplica algoritmos
+3. **Backend** devuelve resultados en formato JSON
+4. **Frontend** recibe la respuesta y actualiza la interfaz dinámicamente
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
