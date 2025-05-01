@@ -67,11 +67,32 @@
 
 ## 📦 Packaging
 
-- [ ] Create standalone executable for Windows users
-- [ ] Develop Docker container for easy deployment
-- [ ] Implement web-based deployment option with cloud hosting
-- [ ] Create installation packages for different operating systems
-- [ ] Develop auto-update mechanism for desktop versions
+## Deployment Options Overview
+
+- [-] **Build Standalone Executable for Windows Users**  
+  Custom executable tailored for offline desktop usage and ease of distribution.  
+  **Estimated Cost:** €450
+
+- [-] **Develop Docker Container for Cross-Platform Deployment**  
+  Ideal for enterprise environments and CI/CD workflows.  
+  **Estimated Cost:** €1220  
+
+- [X] **Package Installers for All Major Operating Systems**  
+  Native installers for Windows, macOS, and Linux.  
+  - [ ] Include automatic update mechanism for desktop clients  
+  **Estimated Cost:** €370  
+
+- [ ] **Cloud-Based Web Deployment**  
+  Fully hosted and managed solution with high scalability and minimal maintenance overhead.  
+  **Estimated Cost:** €790  
+  - Best suited for production environments and enterprise-level usage  
+
+- [X] **Lightweight Self-Hosted Web Deployment**  
+  Cost-effective and reliable option using a shared server infrastructure.  
+  - [X] Custom domain registration included (€20)  
+  - Minimal maintenance, suitable for MVPs and testing phases  
+  **Total Estimated Cost:** **€279.99**  
+  - ✅ *Excellent value for initial deployment without compromising accessibility*
 
 ## 📝 Documentation & Training
 
