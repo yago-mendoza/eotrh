@@ -62,6 +62,12 @@ uvicorn main:app --reload
    *   `main:app`: Tells `uvicorn` where to find the FastAPI application object. It looks for a variable named `app` inside the `main.py` file.
    *   `--reload`: Enables auto-reload. The server will automatically restart whenever it detects changes in the source code, which is very convenient during development.
 
+   For third-party hosting:
+
+```bash
+uvicorn main:app --host=0.0.0.0 --port=$PORT
+```
+
 2. Open your browser and navigate to:
 ```
 http://localhost:8000
@@ -100,27 +106,6 @@ eotrh_diagnosis_app/
 └── venv/                 # Entorno virtual de Python (ignorado generalmente)
 
 ```
-
-## Arquitectura y Funcionamiento Técnico
-
-### Tecnologías Backend
-- **FastAPI**: Framework principal que gestiona rutas, validación y API REST
-- **Uvicorn**: Servidor ASGI para ejecutar la aplicación
-- **Jinja2**: Motor de plantillas para renderizar HTML
-- **OpenCV + scikit-image**: Procesamiento y análisis de imágenes radiográficas
-- **EntropyHub**: Cálculo de medidas de entropía para análisis de textura
-- **Pydantic**: Validación de datos y definición de esquemas
-
-### Tecnologías Frontend
-- **Vanilla JavaScript**: Interacción con API y manipulación del DOM
-- **Fetch API**: Comunicación con endpoints del backend
-- **Chart.js**: Visualización gráfica de resultados del análisis
-
-### Interacción Backend-Frontend
-1. **Frontend** envía imágenes y datos clínicos mediante `fetch` a `/api/analyze`
-2. **Backend** procesa la imagen con OpenCV/scikit-image y aplica algoritmos
-3. **Backend** devuelve resultados en formato JSON
-4. **Frontend** recibe la respuesta y actualiza la interfaz dinámicamente
 
 ## License
 
