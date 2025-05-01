@@ -157,7 +157,7 @@
                              <select id="{{ key }}" name="{{ key }}" required class="score-select">
                                  {% for option_text, score in options_list %}
                                      <!-- **CAMBIO CLAVE: value="{{ score }}"** -->
-                                     <option value="{{ score }}" data-score="{{ score }}">{{ option_text }} ({{ score }} punts)</option>
+                                     <option value="{{ score }}" data-score="{{ score }}">{{ option_text }}</option>
                                  {% endfor %}
                              </select>
                          </div>
@@ -173,7 +173,7 @@
                               <select id="{{ key }}" name="{{ key }}" required class="score-select">
                                   {% for option_text, score in options_list %}
                                      <!-- **CAMBIO CLAVE: value="{{ score }}"** -->
-                                      <option value="{{ score }}" data-score="{{ score }}">{{ option_text }} ({{ score }} punts)</option>
+                                      <option value="{{ score }}" data-score="{{ score }}">{{ option_text }}</option>
                                   {% endfor %}
                               </select>
                           </div>
