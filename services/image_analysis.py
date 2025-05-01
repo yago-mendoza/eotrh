@@ -324,35 +324,21 @@ def _calculate_digital_score(max_dist_en_value: float) -> int:
     """Determina la puntuación digital final basada en el valor MÁXIMO de DistEn2D encontrado entre todas las ROIs.
 
     OBJETIVO: Traducir la métrica técnica de máxima complejidad textural (`max_dist_en_value`)
-              a una categoría clínica simplificada (puntuación numérica).
-    ORIGEN: `max_dist_en_value` es el valor más alto de DistEn2D obtenido de todas las ROIs válidas.
-    DESTINO: La puntuación entera final que se mostrará al usuario y se usará en la evaluación global.
-
-    RAZONAMIENTO (INFERIDO): Se asume que la presencia de *al menos una* región con alta complejidad
-                           textural (DistEn alta) es el indicador clínicamente más relevante.
-                           Por eso se usa el MÁXIMO valor encontrado.
-
-    UMBRALES Y MAPEO:
-        - Los umbrales `DISTEN_HIGH_THRESHOLD` y `DISTEN_MEDIUM_THRESHOLD` se definen en `config.py`.
-          Estos valores deben determinarse EMPÍRICAMENTE mediante estudios clínicos que correlacionen
-          los valores de DistEn2D con diagnósticos conocidos.
-        - El mapeo `DIGITAL_SCORE_MAPPING` (también en `config.py`) asigna una puntuación entera
-          (ej., 0, 1, 3) a las categorías 'low', 'medium', 'high' definidas por los umbrales.
-          La elección de los valores de puntuación (ej. por qué 3 y no 2) dependerá de cómo esta
-          puntuación digital se integre con otras puntuaciones manuales del sistema EOTRH.
+              a una puntuación de 0-10 dividiendo el valor por 2 y aproximando a la decena más cercana.
+    
+    CAMBIOS:
+    1. Postprocesamiento del DistEn2D: Convertir el valor (que oscila entre 63% y 92%) 
+       a una nueva escala 0-100 dividiéndolo por 2.
+    2. Aproximar el resultado a la decena más cercana y convertirlo a escala 0-10.
     """
-    # Comparar el máximo DistEn con los umbrales definidos en config.py.
-    if max_dist_en_value > config.DISTEN_HIGH_THRESHOLD:
-        # Si supera el umbral alto -> categoría 'high'.
-        score = config.DIGITAL_SCORE_MAPPING['high']
-    elif config.DISTEN_MEDIUM_THRESHOLD <= max_dist_en_value <= config.DISTEN_HIGH_THRESHOLD:
-        # Si está entre medio y alto (inclusive) -> categoría 'medium'.
-        score = config.DIGITAL_SCORE_MAPPING['medium']
-    else: # Si es menor que el umbral medio (< DISTEN_MEDIUM_THRESHOLD).
-        # -> categoría 'low'.
-        score = config.DIGITAL_SCORE_MAPPING['low']
-
-    logger.info(f"Max DistEn2D: {max_dist_en_value:.4f} -> Digital Score: {score} (Thresholds: M={config.DISTEN_MEDIUM_THRESHOLD}, H={config.DISTEN_HIGH_THRESHOLD})")
+    # 1. Postprocesar el valor DistEn2D (convertir dividiendo por 2)
+    scaled_value = max_dist_en_value / 2
+    
+    # 2. Aproximar a la decena más cercana y convertir a escala 0-10
+    rounded_percentage = round(scaled_value * 10) / 10
+    score = round(rounded_percentage * 10)
+    
+    logger.info(f"Max DistEn2D: {max_dist_en_value:.4f} -> Scaled: {scaled_value:.4f} -> Score: {score}/10")
     return score
 
 

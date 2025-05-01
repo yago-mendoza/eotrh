@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from fastapi import FastAPI, Request, Form, File, UploadFile, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import logging
@@ -51,6 +51,76 @@ async def read_root(request: Request):
     }
     context["now"] = datetime.datetime.utcnow
     return templates.TemplateResponse("index.html", context)
+
+@app.post("/api/calculate", response_class=JSONResponse)
+async def api_calculate(
+    # Datos del formulario manual (FastAPI los parsea automáticamente)
+    fistules: int = Form(...),
+    recessio: int = Form(...),
+    bulbos: int = Form(...),
+    gingivitis: int = Form(...),
+    mossegada: int = Form(...),
+    dents_afectades: int = Form(...),
+    absents: int = Form(...),
+    forma: int = Form(...),
+    estructura: int = Form(...),
+    superficie: int = Form(...),
+    # Datos ROI (como string JSON)
+    roi_data: str = Form(...), # Recibimos como string
+    # Archivo de imagen
+    image: UploadFile = File(...)
+):
+    """
+    API para procesar datos y devolver resultados como JSON.
+    Esta función contiene la misma lógica que handle_calculation pero devuelve JSON.
+    """
+    logger.info("API calculation endpoint received request.")
+
+    try:
+        # 1. Validar datos manuales con Pydantic
+        manual_data = ManualFormData(
+            fistules=fistules, recessio=recessio, bulbos=bulbos,
+            gingivitis=gingivitis, mossegada=mossegada,
+            dents_afectades=dents_afectades, absents=absents, forma=forma,
+            estructura=estructura, superficie=superficie
+        )
+        
+        # 2. Validar y parsear datos ROI
+        roi_model = RoiData.parse_raw(roi_data)
+        validated_rois: List[List[Tuple[int, int]]] = roi_model.root
+        
+        # 3. Leer contenido de la imagen
+        image_content: bytes = await image.read()
+        
+        # 4. Realizar análisis de textura
+        max_disten, digital_score, roi_details = await image_analysis.analyze_rois_texture(
+            image_content, validated_rois
+        )
+
+        # 5. Calcular puntuaciones manuales
+        clinical_score = scoring.calculate_clinical_score(manual_data)
+        radiographic_score = scoring.calculate_radiographic_score(manual_data)
+
+        # 6. Calcular puntuación integrada y obtener resultados finales
+        analysis_results: AnalysisResult = scoring.calculate_integrated_score(
+            clinical_score=clinical_score,
+            radio_score=radiographic_score,
+            digital_score=digital_score,
+            max_dist_en_value=max_disten,
+            roi_analysis_details=roi_details
+        )
+        
+        # Devolver los resultados como JSON
+        return analysis_results.dict()
+        
+    except Exception as e:
+        logger.error(f"API error: {e}", exc_info=True)
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"Error procesando los datos: {str(e)}"}
+        )
+    finally:
+        await image.close()
 
 @app.post("/calculate", response_class=HTMLResponse)
 async def handle_calculation(
@@ -149,7 +219,8 @@ async def handle_calculation(
 
     logger.info(f"Final integrated score: {analysis_results.puntuacio_total_integrada}, Classification: {analysis_results.classificacio}")
 
-    # 7. Renderizar la plantilla de resultados
+    # Redirigir a la ruta raíz con los resultados en la sesión
+    # Pero volver a TemplateResponse para mantener compatibilidad mientras añadimos el endpoint API
     i18n_strings = load_strings(config.DEFAULT_LOCALE)
     context = {
         "request": request,

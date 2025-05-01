@@ -177,6 +177,9 @@
             <!-- PAS 3: Resultats -->
              {% if results %}
             <div id="step-results" class="step-content results-screen active"> <!-- Añadido active si hay results -->
+            {% else %}
+            <div id="step-results" class="step-content results-screen"> <!-- Añadido para permitir resultados AJAX -->
+            {% endif %}
                  <header class="step-header">
                      <h2>{{ i18n.get("results_title", "Results") }}</h2>
                      <p class="step-explanation">
@@ -191,20 +194,20 @@
                              <div class="score-item">
                                  <!-- Usa textos i18n -->
                                  <h4>{{ i18n.get("clinical_score_label", "Clinical") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('clinical_score_tooltip', 'Clinical score details') }}"></h4>
-                                 <p>{{ results.puntuacio_clinica }} / {{ config.MAX_RAW_SCORES.clinical }}</p>
-                                 <div class="score-bar-container"><div class="score-bar clinical" style="width: {{ (results.puntuacio_clinica / config.MAX_RAW_SCORES.clinical * 100)|int }}%;"></div></div>
+                                 <p>{{ results.puntuacio_clinica if results else "0" }} / {{ config.MAX_RAW_SCORES.clinical }}</p>
+                                 <div class="score-bar-container"><div class="score-bar clinical" style="width: {{ (results.puntuacio_clinica / config.MAX_RAW_SCORES.clinical * 100)|int if results else 0 }}%;"></div></div>
                              </div>
                              <div class="score-item">
                                  <h4>{{ i18n.get("radiographic_score_label", "Radiographic") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('radiographic_score_tooltip', 'Radiographic score details') }}"></h4>
-                                 <p>{{ results.puntuacio_radio }} / {{ config.MAX_RAW_SCORES.radio }}</p>
-                                 <div class="score-bar-container"><div class="score-bar radiographic" style="width: {{ (results.puntuacio_radio / config.MAX_RAW_SCORES.radio * 100)|int }}%;"></div></div>
+                                 <p>{{ results.puntuacio_radio if results else "0" }} / {{ config.MAX_RAW_SCORES.radio }}</p>
+                                 <div class="score-bar-container"><div class="score-bar radiographic" style="width: {{ (results.puntuacio_radio / config.MAX_RAW_SCORES.radio * 100)|int if results else 0 }}%;"></div></div>
                              </div>
                              <div class="score-item">
                                  <!-- Tooltip dinámico con valor DistEn -->
-                                 {% set digital_tooltip = i18n.get('digital_score_tooltip', '').format(max_dist_en_value=results.max_dist_en_value) %}
+                                 {% set digital_tooltip = i18n.get('digital_score_tooltip', '').format(max_dist_en_value=results.max_dist_en_value if results else 0) %}
                                  <h4>{{ i18n.get("digital_score_label", "Digital") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ digital_tooltip if digital_tooltip else i18n.get('digital_score_no_tooltip', 'Digital score details') }}"></h4>
-                                 <p>{{ results.puntuacio_digital }} / {{ config.MAX_RAW_SCORES.digital }}</p>
-                                 <div class="score-bar-container"><div class="score-bar digital" style="width: {{ (results.puntuacio_digital / config.MAX_RAW_SCORES.digital * 100)|int }}%;"></div></div>
+                                 <p>{{ results.puntuacio_digital if results else "0" }} / 10</p>
+                                 <div class="score-bar-container"><div class="score-bar digital" style="width: {{ (results.puntuacio_digital / 10 * 100)|int if results else 0 }}%;"></div></div>
                              </div>
                          </div>
                          
@@ -214,10 +217,12 @@
                              <div class="entropy-metric">
                                  <label>{{ i18n.get("disten_label", "Distància Entropia 2D (DistEn2D)") }}</label>
                                  <div class="entropy-bar-container">
-                                     <div class="entropy-bar" style="width: {{ (results.max_dist_en_value * 100)|round|int }}%;"></div>
-                                     <div class="entropy-marker" style="left: {{ (results.max_dist_en_value * 100)|round|int }}%;"></div>
+                                     <!-- Mostrar el valor postprocesado (DistEn2D/2) en la barra -->
+                                     <div class="entropy-bar" style="width: {{ ((results.max_dist_en_value / 2) * 100)|round|int if results else 0 }}%;"></div>
+                                     <div class="entropy-marker" style="left: {{ ((results.max_dist_en_value / 2) * 100)|round|int if results else 0 }}%;"></div>
                                  </div>
-                                 <div class="entropy-value">{{ (results.max_dist_en_value * 100)|round|int }}%</div>
+                                 <!-- Mostrar el valor postprocesado como porcentaje -->
+                                 <div class="entropy-value">{{ ((results.max_dist_en_value / 2) * 100)|round|int if results else 0 }}%</div>
                              </div>
                              <div class="entropy-interpretation">
                                  <p>
@@ -238,23 +243,23 @@
                      <section class="results-summary">
                          <h3>{{ i18n.get("integrated_score_title", "Global Score") }}</h3>
                           <!-- Termómetro -->
-                         <div class="thermometer-display" data-score="{{ results.puntuacio_total_integrada }}" data-max="{{ config.MAX_INTEGRATED_SCORE }}">
+                         <div class="thermometer-display" data-score="{{ results.puntuacio_total_integrada if results else 0 }}" data-max="{{ config.MAX_INTEGRATED_SCORE }}">
                              <div class="thermometer-track">
                                  <div class="thermometer-fill"></div>
                              </div>
                              <div class="thermometer-bulb">
-                                 <div class="thermometer-percentage">{{ (results.puntuacio_total_integrada / config.MAX_INTEGRATED_SCORE * 100)|round|int }}%</div>
+                                 <div class="thermometer-percentage">{{ (results.puntuacio_total_integrada / config.MAX_INTEGRATED_SCORE * 100)|round|int if results else 0 }}%</div>
                              </div>
                          </div>
                          <!-- Clasificación (texto ya viene de i18n) -->
                          <p class="classification-text" id="classification-text-id">
-                            <strong>{{ i18n.get("classification_label", "Risk:") }} {{ results.classificacio }}</strong>
+                            <strong>{{ i18n.get("classification_label", "Risk:") }} {{ results.classificacio if results else i18n.get("none", "None") }}</strong>
                          </p>
                      </section>
                  </div>
 
                  <p class="interpretation-text">
-                    {{ results.interpretacio }} <!-- Texto ya viene de i18n vía backend -->
+                    {{ results.interpretacio if results else "" }} <!-- Texto ya viene de i18n vía backend -->
                 </p>
 
                  <div class="navigation-buttons">
@@ -262,7 +267,6 @@
                     <button type="button" onclick="window.location.href='{{ url_for('read_root') }}';">{{ i18n.get("new_evaluation_button", "New Evaluation") }}</button>
                  </div>
             </div>
-             {% endif %}
 
         </main>
 
@@ -293,7 +297,8 @@
                     <li>{{ i18n.get("entropy_modal_li3", "Processos de hipercementosi") }}</li>
                 </ul>
                 <p>{{ i18n.get("entropy_modal_p3", "Un valor més alt (prop del 100%) indica major irregularitat i complexitat en la textura, sovint associat amb estadis més avançats de la malaltia.") }}</p>
-                <p>{{ i18n.get("entropy_modal_p4", "Les investigacions de Górski et al. (2022) han demostrat que aquest biomarcador digital pot ser útil per identificar canvis patològics fins i tot abans que siguin clarament visibles en radiografies convencionals o presentin signes clínics evidents.") }}</p>
+                <p>{{ i18n.get("entropy_modal_p4", "Les investigacions de Górski et al. (2022) suggereixen que aquest biomarcador digital podria facilitar la detecció precoç de canvis patològics, fins i tot abans que siguin visibles en radiografies convencionals o es manifestin clínicament.") }}</p>
+                <p>{{ i18n.get("entropy_modal_p5", "No obstant, en aquest projecte se n'ha fet una adaptació específica amb una finalitat principalment exploratòria, i els resultats s'han d'interpretar en aquest mateix context.") }}</p>
             </div>
         </div>
     </div>
@@ -317,6 +322,103 @@
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
+        });
+    </script>
+
+    <!-- Código para envío AJAX del formulario -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('diagnosis-form');
+            
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault(); // Prevenir envío tradicional
+                    
+                    // Mostrar indicador de carga
+                    navigateStep('step-loading');
+                    
+                    // Crear objeto FormData con los datos del formulario
+                    const formData = new FormData(form);
+                    
+                    // Enviar datos mediante fetch API
+                    fetch('/api/calculate', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la respuesta del servidor: ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(results => {
+                        // Procesar resultados recibidos
+                        console.log('Resultados recibidos:', results);
+                        
+                        // Actualizar DOM con los resultados
+                        updateResultsView(results);
+                        
+                        // Navegar a la vista de resultados
+                        navigateStep('step-results');
+                    })
+                    .catch(error => {
+                        console.error('Error en el envío AJAX:', error);
+                        showGlobalError('Error al procesar los datos: ' + error.message);
+                        // Volver a la vista anterior
+                        navigateStep('step-manual-data');
+                    });
+                });
+            }
+            
+            // Función para actualizar la vista de resultados con los datos recibidos
+            function updateResultsView(results) {
+                // Actualizar puntuaciones
+                document.querySelector('.score-item:nth-child(1) p').textContent = 
+                    `${results.puntuacio_clinica} / {{ config.MAX_RAW_SCORES.clinical }}`;
+                document.querySelector('.score-item:nth-child(1) .score-bar').style.width = 
+                    `${(results.puntuacio_clinica / {{ config.MAX_RAW_SCORES.clinical }} * 100)}%`;
+                
+                document.querySelector('.score-item:nth-child(2) p').textContent = 
+                    `${results.puntuacio_radio} / {{ config.MAX_RAW_SCORES.radio }}`;
+                document.querySelector('.score-item:nth-child(2) .score-bar').style.width = 
+                    `${(results.puntuacio_radio / {{ config.MAX_RAW_SCORES.radio }} * 100)}%`;
+                
+                document.querySelector('.score-item:nth-child(3) p').textContent = 
+                    `${results.puntuacio_digital} / 10`;
+                document.querySelector('.score-item:nth-child(3) .score-bar').style.width = 
+                    `${(results.puntuacio_digital / 10 * 100)}%`;
+                
+                // Actualizar entropia - mostrar el valor postprocesado (DistEn2D/2)
+                const entropyPercentage = Math.round((results.max_dist_en_value / 2) * 100);
+                document.querySelector('.entropy-bar').style.width = `${entropyPercentage}%`;
+                document.querySelector('.entropy-marker').style.left = `${entropyPercentage}%`;
+                document.querySelector('.entropy-value').textContent = `${entropyPercentage}%`;
+                
+                // Actualizar termómetro
+                const thermometerFill = document.querySelector('.thermometer-fill');
+                const thermometerPercentage = document.querySelector('.thermometer-percentage');
+                if (thermometerFill && thermometerPercentage) {
+                    const percentage = Math.round((results.puntuacio_total_integrada / {{ config.MAX_INTEGRATED_SCORE }}) * 100);
+                    thermometerFill.style.height = `${percentage}%`;
+                    thermometerPercentage.textContent = `${percentage}%`;
+                }
+                
+                // Actualizar clasificación
+                document.getElementById('classification-text-id').innerHTML = 
+                    `<strong>{{ i18n.get("classification_label", "Risk:") }} ${results.classificacio}</strong>`;
+                
+                // Actualizar interpretación
+                document.querySelector('.interpretation-text').textContent = results.interpretacio;
+            }
+            
+            // Botón de nueva evaluación ahora redirecciona a la raíz sin submit
+            const newEvalButtons = document.querySelectorAll('button[onclick*="window.location.href"]');
+            newEvalButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = '/';
+                });
+            });
         });
     </script>
 
