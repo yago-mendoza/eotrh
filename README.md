@@ -48,6 +48,12 @@ pip install fastapi uvicorn jinja2 python-multipart opencv-python scikit-image E
 
 ### Running the Application
 
+0. Make sure your virtual environment is activated and running.
+
+```bash
+.\venv\Scripts\activate
+```
+
 1. Start the server:
 ```bash
 uvicorn main:app --reload
