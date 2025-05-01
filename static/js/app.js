@@ -21,6 +21,9 @@ const RoiEditor = (function() {
     let currentTool = 'select'; // Herramienta activa actualmente ('select', 'polygon', 'freehand').
     let historyStack = [];      // Array para almacenar los estados del canvas (serializados a JSON) para Deshacer/Rehacer.
     let currentStateIndex = -1; // Índice del estado actual en historyStack (-1 si está vacío).
+    
+    // Flags de depuración
+    const DEBUG_MODE = false; // Cambiar a true para habilitar funciones de depuración
 
     // --- Constantes de Estilo (Configuración Visual Interna) ---
     // Define la apariencia de las ROIs y los elementos de ayuda visual.
@@ -460,6 +463,25 @@ const RoiEditor = (function() {
              });
              brushSizeValue.textContent = newSlider.value;
          }
+
+         // Add debug toggle button if not already present
+         if (DEBUG_MODE && !document.getElementById('debug-toggle')) {
+             const debugToggle = document.createElement('button');
+             debugToggle.id = 'debug-toggle';
+             debugToggle.textContent = '🐞 Debug';
+             debugToggle.style.cssText = 'position:absolute; bottom:10px; right:10px; z-index:1000; padding:5px 10px; background:#ff3333; color:white; border:none; border-radius:4px; cursor:pointer;';
+             debugToggle.onclick = function() {
+                 // Toggle diagnostics visibility
+                 const overlay = document.getElementById('roi-debug-overlay');
+                 if (overlay) {
+                     overlay.style.display = overlay.style.display === 'none' ? 'block' : 'none';
+                 } else {
+                     // Force regenerate debug info by calling getRoiDataForBackend
+                     getRoiDataForBackend();
+                 }
+             };
+             wrapperElement.appendChild(debugToggle);
+         }
      }
 
      function setActiveTool(toolName) {
@@ -555,6 +577,66 @@ const RoiEditor = (function() {
          // Prevent division by zero if displayed dimensions are somehow zero
          const widthRatio = (displayedWidth > 0) ? originalWidth / displayedWidth : 1;
          const heightRatio = (displayedHeight > 0) ? originalHeight / displayedHeight : 1;
+
+         // Gather additional diagnostic information if in debug mode
+         if (DEBUG_MODE) {
+             const img = background.getElement();
+             const debugInfo = {
+                 canvas: {
+                     width: canvas.width,
+                     height: canvas.height
+                 },
+                 originalImg: {
+                     naturalWidth: img?.naturalWidth,
+                     naturalHeight: img?.naturalHeight,
+                     clientWidth: img?.clientWidth,
+                     clientHeight: img?.clientHeight,
+                     width: img?.width,
+                     height: img?.height
+                 },
+                 background: {
+                     width: background.width,
+                     height: background.height,
+                     scaleX: background.scaleX,
+                     scaleY: background.scaleY,
+                     left: background.left,
+                     top: background.top
+                 },
+                 calculations: {
+                     displayedWidth,
+                     displayedHeight,
+                     originalWidth,
+                     originalHeight,
+                     widthRatio,
+                     heightRatio
+                 }
+             };
+             console.log('[DEBUG DETAIL] Image and canvas properties:', debugInfo);
+             
+             // Create a diagnostic overlay on the canvas
+             const diagnoseContainer = document.createElement('div');
+             diagnoseContainer.id = 'roi-debug-overlay';
+             diagnoseContainer.style.cssText = 'position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.7); color:white; padding:10px; border-radius:5px; z-index:1000; font-family:monospace; font-size:12px; max-width:400px; overflow:auto; max-height:80vh;';
+             diagnoseContainer.innerHTML = `
+                <h3>ROI Debug Information</h3>
+                <p>Canvas: ${canvas.width}×${canvas.height}</p>
+                <p>Image natural: ${img?.naturalWidth}×${img?.naturalHeight}</p>
+                <p>Background: ${background.width}×${background.height}</p>
+                <p>Scale: ${background.scaleX.toFixed(4)}×${background.scaleY.toFixed(4)}</p>
+                <p>Offset: ${background.left.toFixed(2)},${background.top.toFixed(2)}</p>
+                <p>Width ratio: ${widthRatio.toFixed(4)}</p>
+                <p>Height ratio: ${heightRatio.toFixed(4)}</p>
+                <button onclick="this.parentNode.style.display='none';">Close</button>
+             `;
+             
+             // Remove existing overlay if any
+             const existingOverlay = document.getElementById('roi-debug-overlay');
+             if (existingOverlay) {
+                 existingOverlay.remove();
+             }
+             
+             document.querySelector('#canvas-wrapper')?.appendChild(diagnoseContainer);
+         }
 
          console.log('[DEBUG] Extracting ROIs. Background props:', {
              offsetX, offsetY,

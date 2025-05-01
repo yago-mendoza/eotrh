@@ -28,6 +28,9 @@ logger = logging.getLogger(__name__) # Logger estándar de Python.
 # Cargar cadenas de texto (mensajes de error, etc.) para el idioma por defecto.
 i18n_strings = load_strings(config.DEFAULT_LOCALE)
 
+# Flag para habilitar visualizaciones de depuración
+DEBUG_VISUALIZE = False  # Cambiar a True para habilitar visualizaciones de depuración
+
 # --- Funciones Auxiliares (Descomposición Funcional) ---
 # Dividir el proceso en funciones más pequeñas mejora la legibilidad y mantenibilidad.
 
@@ -52,7 +55,21 @@ def _extract_roi_pixels(image: np.ndarray, roi_vertices: List[Tuple[int, int]]) 
     logger.debug(f"[DEBUG] _extract_roi_pixels: Input image shape={image.shape}, dtype={image.dtype}")
     # Los vértices vienen del frontend (JSON), ya validados >= 3 puntos por `RoiData` schema.
     logger.debug(f"[DEBUG] _extract_roi_pixels: Input roi_vertices={roi_vertices}")
-    polygon = np.array(roi_vertices, dtype=np.int32) # OpenCV necesita int32.
+    
+    # Verificar y ajustar las coordenadas para asegurarse de que estén dentro de los límites de la imagen
+    h, w = image.shape[:2]
+    adjusted_vertices = []
+    for x, y in roi_vertices:
+        # Limitar las coordenadas al rango válido de la imagen
+        adj_x = max(0, min(x, w-1))
+        adj_y = max(0, min(y, h-1))
+        adjusted_vertices.append((adj_x, adj_y))
+    
+    # Registrar si hubo ajustes
+    if adjusted_vertices != roi_vertices:
+        logger.warning(f"ROI vertices were adjusted to fit image boundaries. Original: {roi_vertices}, Adjusted: {adjusted_vertices}")
+    
+    polygon = np.array(adjusted_vertices, dtype=np.int32) # OpenCV necesita int32.
     logger.debug(f"[DEBUG] _extract_roi_pixels: Polygon array shape={polygon.shape}, dtype={polygon.dtype}")
 
     # Validación básica (aunque redundante si el schema funcionó).
@@ -75,6 +92,39 @@ def _extract_roi_pixels(image: np.ndarray, roi_vertices: List[Tuple[int, int]]) 
     kernel = np.ones((3,3), np.uint8)
     mask_dilated = cv2.dilate(mask, kernel, iterations = 1) # 1 iteración es suficiente para una expansión mínima.
     logger.debug(f"[DEBUG] _extract_roi_pixels: Non-zero in mask after dilation={np.count_nonzero(mask_dilated)}")
+
+    # Guardar imágenes de debug si la visualización está habilitada
+    if DEBUG_VISUALIZE:
+        try:
+            import os
+            os.makedirs("debug_images", exist_ok=True)
+            
+            # Guardar la imagen original con los vértices del ROI dibujados
+            img_with_roi = image.copy()
+            if len(img_with_roi.shape) == 2:  # Si es grayscale, convertir a RGB
+                img_with_roi = cv2.cvtColor(img_with_roi, cv2.COLOR_GRAY2BGR)
+            
+            # Dibujar los vértices originales (en rojo) y ajustados (en verde)
+            for i, (x, y) in enumerate(roi_vertices):
+                cv2.circle(img_with_roi, (x, y), 5, (0, 0, 255), -1)  # Rojo para originales
+            
+            for i, (x, y) in enumerate(adjusted_vertices):
+                cv2.circle(img_with_roi, (x, y), 3, (0, 255, 0), -1)  # Verde para ajustados
+            
+            cv2.polylines(img_with_roi, [polygon], True, (255, 255, 0), 2)  # Amarillo para el polígono
+            
+            cv2.imwrite(f"debug_images/original_with_roi.png", img_with_roi)
+            cv2.imwrite(f"debug_images/mask.png", mask)
+            cv2.imwrite(f"debug_images/mask_dilated.png", mask_dilated)
+            
+            # Visualizar los píxeles extraídos
+            extracted_visualization = np.zeros_like(image)
+            extracted_visualization[mask_dilated == 255] = image[mask_dilated == 255]
+            cv2.imwrite(f"debug_images/extracted_pixels.png", extracted_visualization)
+            
+            logger.info(f"Debug images saved to 'debug_images/' directory")
+        except Exception as e:
+            logger.error(f"Error saving debug images: {e}")
 
     # --- Extracción Final ---
     # CÓMO: Usar la máscara dilatada (donde los píxeles son 255) como índice booleano
