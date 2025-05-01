@@ -482,6 +482,175 @@ select.score-4 { border-left-color: var(--danger-color); } /* Rojo para 4+ */
 .roi-details-results li { margin-bottom: 8px; font-size: 0.9em; }
 .error-text { color: var(--danger-color); font-style: italic; }
 
+/* --- Anàlisi Entropia del ROI --- */
+.entropy-analysis {
+    background-color: var(--light-bg);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.entropy-analysis h3 {
+    font-size: 1.1em;
+    color: var(--dark-text);
+    margin-bottom: 15px;
+}
+
+.entropy-metric {
+    margin-bottom: 15px;
+}
+
+.entropy-metric label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.entropy-bar-container {
+    height: 12px;
+    background-color: #e0e0e0;
+    border-radius: 6px;
+    overflow: visible;
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.entropy-bar {
+    height: 100%;
+    background: linear-gradient(to right, var(--success-color), var(--warning-color), var(--danger-color));
+    border-radius: 6px;
+}
+
+.entropy-marker {
+    position: absolute;
+    top: -4px;
+    width: 20px;
+    height: 20px;
+    background-color: #ffffff;
+    border: 3px solid var(--primary-color);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.entropy-value {
+    text-align: right;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.entropy-interpretation {
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    margin-bottom: 15px;
+}
+
+.entropy-interpretation p {
+    margin: 0;
+    font-size: 0.95em;
+    line-height: 1.5;
+}
+
+.info-link {
+    text-decoration: none;
+    color: var(--primary-color);
+    margin-left: 8px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+}
+
+.info-link:hover {
+    text-decoration: underline;
+}
+
+.entropy-technical-note {
+    font-size: 0.85em;
+    color: var(--medium-text);
+    font-style: italic;
+}
+
+.entropy-technical-note p {
+    margin: 0;
+}
+
+/* --- Modal Styles --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 80%;
+    max-width: 600px;
+    animation: slideDown 0.4s;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: var(--medium-text);
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: var(--dark-text);
+}
+
+.modal h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-body {
+    font-size: 0.95em;
+    line-height: 1.6;
+    color: var(--dark-text);
+}
+
+.modal-body p {
+    margin-bottom: 15px;
+}
+
+.modal-body ul {
+    margin-bottom: 15px;
+    padding-left: 20px;
+}
+
+.modal-body li {
+    margin-bottom: 8px;
+}
+
 /* --- Footer --- */
 .app-footer {
     padding: 15px 30px;

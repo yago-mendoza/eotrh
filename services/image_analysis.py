@@ -361,7 +361,7 @@ async def analyze_rois_texture(
     try:
         # Decodificar los bytes de la imagen usando OpenCV.
         nparr = np.frombuffer(file_content, np.uint8)
-        img_color = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        img_color = cv2.imdecode(nparr, cv2.IMREAD_COLOR | cv2.IMREAD_IGNORE_ORIENTATION)
         if img_color is None:
             # Error si OpenCV no puede decodificar la imagen.
             logger.error(i18n_strings.get("error_decoding_image", "error_decoding_image"))

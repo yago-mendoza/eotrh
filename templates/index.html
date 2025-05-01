@@ -207,27 +207,32 @@
                                  <div class="score-bar-container"><div class="score-bar digital" style="width: {{ (results.puntuacio_digital / config.MAX_RAW_SCORES.digital * 100)|int }}%;"></div></div>
                              </div>
                          </div>
-                         <p class="interpretation-text">
-                             {{ results.interpretacio }} <!-- Texto ya viene de i18n vía backend -->
-                         </p>
+                         
+                         <!-- Nou bloc d'Anàlisi Entropia del ROI -->
+                         <div class="entropy-analysis">
+                             <h3>{{ i18n.get("entropy_analysis_title", "Anàlisi Entropia del ROI") }}</h3>
+                             <div class="entropy-metric">
+                                 <label>{{ i18n.get("disten_label", "Distància Entropia 2D (DistEn2D)") }}</label>
+                                 <div class="entropy-bar-container">
+                                     <div class="entropy-bar" style="width: {{ (results.max_dist_en_value * 100)|round|int }}%;"></div>
+                                     <div class="entropy-marker" style="left: {{ (results.max_dist_en_value * 100)|round|int }}%;"></div>
+                                 </div>
+                                 <div class="entropy-value">{{ (results.max_dist_en_value * 100)|round|int }}%</div>
+                             </div>
+                             <div class="entropy-interpretation">
+                                 <p>
+                                     {{ i18n.get("entropy_interpretation", "Aquest valor indica una alta irregularitat en la textura de la dent a la regió analitzada. Pot ser un indicador precoç de canvis morfològics associats a EOTRH, fins i tot amb signes clínics mínims.") }}
+                                     <a href="#" class="info-link" onclick="showEntropyInfo(event)">{{ i18n.get("more_info_link", "ℹ️ Més informació") }}</a>
+                                 </p>
+                             </div>
+                             <div class="entropy-technical-note">
+                                 <p>{{ i18n.get("entropy_technical_note", "Mesurat segons Distribution Entropy 2D després de filtrat Normalize. Basat en Górski et al. (2022). Útil per detectar fases inicials i avançades d'EOTRH.") }}</p>
+                             </div>
+                         </div>
+                         
+                         
 
-                         {% if results.roi_analysis_details %}
-                         <details class="roi-details-results">
-                             <summary>{{ i18n.get("roi_analysis_details_title", "ROI Analysis Details") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('roi_analysis_details_tooltip', 'Details about individual ROI analysis') }}"></summary>
-                             <ul>
-                             {% for detail in results.roi_analysis_details %}
-                                 <li>
-                                     <!-- Texto i18n con placeholders -->
-                                     {% set dist_en_text = detail.dist_en if detail.dist_en is not none else i18n.get('roi_analysis_na', 'N/A') %}
-                                     {{ i18n.get('roi_analysis_item', 'ROI {roi_index}: DistEn2D = {dist_en}').format(roi_index=detail.roi_index, dist_en=dist_en_text) }}
-                                     {% if detail.error %}
-                                         <span class="error-text">{{ i18n.get('roi_analysis_error', '(Error: {error})').format(error=detail.error) }}</span>
-                                     {% endif %}
-                                 </li>
-                             {% endfor %}
-                             </ul>
-                         </details>
-                         {% endif %}
+                         
                      </section>
 
                      <section class="results-summary">
@@ -247,6 +252,10 @@
                          </p>
                      </section>
                  </div>
+
+                 <p class="interpretation-text">
+                    {{ results.interpretacio }} <!-- Texto ya viene de i18n vía backend -->
+                </p>
 
                  <div class="navigation-buttons">
                     <!-- Botón para volver al inicio -->
@@ -269,6 +278,47 @@
 
     <!-- Luego nuestra lógica principal y del editor (AHORA SOLO app.js) -->
     <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+
+    <!-- Modal para información de entropia -->
+    <div id="entropy-info-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>{{ i18n.get("entropy_modal_title", "Entropia de Distribució 2D (DistEn2D)") }}</h3>
+            <div class="modal-body">
+                <p>{{ i18n.get("entropy_modal_p1", "La Distància d'Entropia 2D (DistEn2D) és una mesura de la complexitat i irregularitat de la textura d'una imatge radiogràfica.") }}</p>
+                <p>{{ i18n.get("entropy_modal_p2", "En el context de l'EOTRH (Reabsorció Dental Odontoclàstica Equina i Hipercementosi), aquest valor quantifica els canvis morfològics que poden indicar:") }}</p>
+                <ul>
+                    <li>{{ i18n.get("entropy_modal_li1", "Alteracions precoces en l'estructura dental") }}</li>
+                    <li>{{ i18n.get("entropy_modal_li2", "Reabsorció òssia inicial") }}</li>
+                    <li>{{ i18n.get("entropy_modal_li3", "Processos de hipercementosi") }}</li>
+                </ul>
+                <p>{{ i18n.get("entropy_modal_p3", "Un valor més alt (prop del 100%) indica major irregularitat i complexitat en la textura, sovint associat amb estadis més avançats de la malaltia.") }}</p>
+                <p>{{ i18n.get("entropy_modal_p4", "Les investigacions de Górski et al. (2022) han demostrat que aquest biomarcador digital pot ser útil per identificar canvis patològics fins i tot abans que siguin clarament visibles en radiografies convencionals o presentin signes clínics evidents.") }}</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para mostrar el modal de información de entropía
+        function showEntropyInfo(event) {
+            event.preventDefault();
+            document.getElementById('entropy-info-modal').style.display = 'block';
+        }
+
+        // Cerrar el modal cuando se hace clic en la X
+        document.querySelectorAll('.close-modal').forEach(function(element) {
+            element.addEventListener('click', function() {
+                this.closest('.modal').style.display = 'none';
+            });
+        });
+
+        // Cerrar el modal al hacer clic fuera de él
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        });
+    </script>
 
 </body>
 </html>

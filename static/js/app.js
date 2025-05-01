@@ -541,18 +541,34 @@ const RoiEditor = (function() {
 
          const rois = [];
          const background = canvas.backgroundImage;
-         const scaleX = background.scaleX || 1;
-         const scaleY = background.scaleY || 1;
          const offsetX = background.left || 0;
          const offsetY = background.top || 0;
 
-         console.log('[DEBUG] Extracting ROIs. Background props:', { scaleX, scaleY, offsetX, offsetY });
+         // New way: Use direct ratio of original size to displayed size
+         const displayedWidth = background.width * (background.scaleX || 1);
+         const displayedHeight = background.height * (background.scaleY || 1);
+         // Get original dimensions directly from the image object Fabric loaded
+         // Note: background.getElement() gives the underlying HTMLImageElement
+         const originalWidth = background.getElement()?.naturalWidth || background.width; // Fallback to background.width if needed
+         const originalHeight = background.getElement()?.naturalHeight || background.height; // Fallback to background.height if needed
+
+         // Prevent division by zero if displayed dimensions are somehow zero
+         const widthRatio = (displayedWidth > 0) ? originalWidth / displayedWidth : 1;
+         const heightRatio = (displayedHeight > 0) ? originalHeight / displayedHeight : 1;
+
+         console.log('[DEBUG] Extracting ROIs. Background props:', {
+             offsetX, offsetY,
+             displayedWidth, displayedHeight,
+             originalWidth, originalHeight,
+             widthRatio, heightRatio
+          });
 
          canvas.getObjects().forEach((obj, index) => {
              if (obj.isRoi) {
                  let points = [];
                  const transformMatrix = obj.calcTransformMatrix();
 
+                 // Get points in absolute canvas coordinates (same as before)
                  if (obj.type === 'polygon' && obj.points) {
                      points = obj.points.map(p => fabric.util.transformPoint({ x: p.x, y: p.y }, transformMatrix));
                  } else if (obj.type === 'path' && obj.path) {
@@ -567,9 +583,10 @@ const RoiEditor = (function() {
                       return;
                  }
 
+                 // Apply the refined transformation
                  const originalImagePoints = points.map(p => [
-                     Math.round((p.x - offsetX) / scaleX),
-                     Math.round((p.y - offsetY) / scaleY)
+                     Math.round((p.x - offsetX) * widthRatio),
+                     Math.round((p.y - offsetY) * heightRatio)
                  ]);
 
                  console.log(`[DEBUG] ROI ${rois.length + 1} (${obj.type}): Canvas points (transformed)=`, points.length, `Original points=`, originalImagePoints.length);
