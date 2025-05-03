@@ -757,17 +757,14 @@ document.addEventListener('DOMContentLoaded', () => {
              targetStepElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
              if (targetStepId === 'step-roi-editor' && AppState.imageDataUrl) {
-                 requestAnimationFrame(() => {
-                     // console.log("Calling RoiEditor.initialize with image URL...");
-                     RoiEditor.initialize(AppState.imageDataUrl);
-                 });
-             }
-             else if (targetStepId === 'step-results') {
-                 setTimeout(updateThermometerDisplay, 100);
+                 // If we're navigating to the ROI editor, make sure the canvas is initialized
+                 if (!canvas) {
+                     initializeRoiEditor(AppState.imageDataUrl);
+                 }
              }
          } else {
              console.error("Navigation Error: Target step element not found:", targetStepId);
-             showGlobalError(`Error interno: No se encontró el paso '${targetStepId}'.`);
+             showGlobalError(`Internal error: Step '${targetStepId}' not found.`);
          }
      }
 
@@ -814,19 +811,19 @@ document.addEventListener('DOMContentLoaded', () => {
                      }, 500);
                  } else {
                      console.error("AppState.imageDataUrl is null when trying to start analysis.");
-                     showGlobalError("Error procesando la previsualización. Intenta seleccionar la imagen de nuevo.");
+                     showGlobalError("Please select or drag a valid image first.");
                      AppState.selectedFile = null;
                      displayFileNameAndEnableButton(null);
                  }
              } else {
                  console.warn("Start Analysis button clicked, but no valid file stored in AppState.");
-                 showGlobalError("Por favor, selecciona o arrastra una imagen válida primero.");
+                 showGlobalError("Please select or drag a valid image first.");
              }
          });
 
      } else {
-         console.error("Error fatal: Elementos de UI para carga de archivos no encontrados.");
-         showGlobalError("Error inicializando la página. Refresca o contacta con soporte.");
+         console.error("Fatal error: UI elements for file upload not found.");
+         showGlobalError("Error initializing the page. Refresh or contact support.");
      }
 
      function preventDefaults(e) {
@@ -852,7 +849,7 @@ document.addEventListener('DOMContentLoaded', () => {
      function displayFileNameAndEnableButton(file) {
          clearGlobalError();
          if (file && file.type.startsWith('image/')) {
-             fileNameDisplay.textContent = `Archivo: ${file.name}`;
+             fileNameDisplay.textContent = `File: ${file.name}`;
              startAnalysisButton.disabled = false;
              AppState.selectedFile = file;
 
@@ -872,7 +869,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  }
                  reader.onerror = function(e) {
                      console.error("FileReader error:", e);
-                     showGlobalError("Error leyendo la previsualización de la imagen.");
+                     showGlobalError("Error reading the image preview.");
                      AppState.imageDataUrl = null;
                      startAnalysisButton.disabled = true;
                  }
@@ -886,7 +883,7 @@ document.addEventListener('DOMContentLoaded', () => {
              }
 
          } else {
-             fileNameDisplay.textContent = file ? `Formato no soportado: ${file.name}` : "";
+             fileNameDisplay.textContent = file ? `Unsupported format: ${file.name}` : "";
              startAnalysisButton.disabled = true;
              AppState.selectedFile = null;
              AppState.imageDataUrl = null;
@@ -895,7 +892,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  imagePreviewContainer.innerHTML = '';
              }
              if(file) {
-                 showGlobalError("Por favor, selecciona un archivo de imagen válido (JPEG, PNG, etc.).");
+                 showGlobalError("Please select a valid image file (JPEG, PNG, etc.).");
              }
          }
      }
@@ -906,7 +903,8 @@ document.addEventListener('DOMContentLoaded', () => {
              const roiDataArray = RoiEditor.getRoiData();
 
              if (roiDataArray.length === 0) {
-                 const proceed = confirm("Advertencia: No has dibujado ninguna Región de Interés (ROI). La puntuación digital será 0. ¿Deseas continuar?");
+                 // Ask confirmation if no ROIs
+                 const proceed = confirm("You haven't selected any Region of Interest (ROI). This may affect digital analysis results. Do you want to continue anyway?");
                  if (!proceed) return;
              }
 
@@ -917,7 +915,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  setTimeout(() => openTab(null, 'tab-clinical'), 0);
              } catch (e) {
                  console.error("Error stringifying ROI data:", e);
-                 showGlobalError("Error interno al procesar las ROIs. Inténtalo de nuevo.");
+                 showGlobalError("Internal error processing ROIs. Please try again.");
              }
          });
      } else {

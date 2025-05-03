@@ -93,29 +93,29 @@
                     </header>
                     <div class="editor-layout">
                         <aside class="roi-toolbar">
-                             <button type="button" id="tool-select" class="tool-button active" title="Seleccionar/Moure (S)">
+                             <button type="button" id="tool-select" class="tool-button active" title="Select/Move (S)">
                                  <img src="{{ url_for('static', path='img/icon-select.svg') }}" alt="Select">
                              </button>
-                            <button type="button" id="tool-polygon" class="tool-button" title="Dibuixar Polígon (P)">
+                            <button type="button" id="tool-polygon" class="tool-button" title="Draw Polygon (P)">
                                 <img src="{{ url_for('static', path='img/icon-polygon.svg') }}" alt="Polygon">
                             </button>
-                            <button type="button" id="tool-freehand" class="tool-button" title="Dibuix Lliure (F)">
+                            <button type="button" id="tool-freehand" class="tool-button" title="Freehand Drawing (F)">
                                 <img src="{{ url_for('static', path='img/icon-freehand.svg') }}" alt="Freehand">
                             </button>
                             <div class="tool-options" id="freehand-options" style="display:none;">
-                                <label for="brush-size">Gruix:</label>
+                                <label for="brush-size">Thickness:</label>
                                 <input type="range" id="brush-size" min="1" max="20" value="3">
                                 <span id="brush-size-value">3</span>px
                             </div>
-                             <!-- Botón Grid Opcional -->
+                             <!-- Optional Grid Button -->
                             <hr>
-                             <button type="button" id="tool-undo" class="tool-button" title="Desfer (Ctrl+Z)">
+                             <button type="button" id="tool-undo" class="tool-button" title="Undo (Ctrl+Z)">
                                  <img src="{{ url_for('static', path='img/icon-undo.svg') }}" alt="Undo">
                              </button>
-                             <button type="button" id="tool-redo" class="tool-button" title="Refer (Ctrl+Y)">
+                             <button type="button" id="tool-redo" class="tool-button" title="Redo (Ctrl+Y)">
                                  <img src="{{ url_for('static', path='img/icon-redo.svg') }}" alt="Redo">
                              </button>
-                            <button type="button" id="tool-delete" class="tool-button" title="Esborrar Seleccionat (Supr)">
+                            <button type="button" id="tool-delete" class="tool-button" title="Delete Selected (Del)">
                                 <img src="{{ url_for('static', path='img/icon-delete.svg') }}" alt="Delete">
                             </button>
                         </aside>
@@ -156,7 +156,7 @@
                              </label>
                              <select id="{{ key }}" name="{{ key }}" required class="score-select">
                                  {% for option_text, score in options_list %}
-                                     <!-- **CAMBIO CLAVE: value="{{ score }}"** -->
+                                     <!-- **KEY CHANGE: value="{{ score }}"** -->
                                      <option value="{{ score }}" data-score="{{ score }}">{{ option_text }}</option>
                                  {% endfor %}
                              </select>
@@ -172,7 +172,7 @@
                               </label>
                               <select id="{{ key }}" name="{{ key }}" required class="score-select">
                                   {% for option_text, score in options_list %}
-                                     <!-- **CAMBIO CLAVE: value="{{ score }}"** -->
+                                     <!-- **KEY CHANGE: value="{{ score }}"** -->
                                       <option value="{{ score }}" data-score="{{ score }}">{{ option_text }}</option>
                                   {% endfor %}
                               </select>
@@ -286,7 +286,7 @@
         </main>
 
         <footer class="app-footer">
-            <p>© {{ now().year }} Desenvolupament de software independent. Version 1.1</p>
+            <p>© {{ now().year }} Independent software development. Version 1.1</p>
         </footer>
 
     </div> <!-- /app-container -->
@@ -298,7 +298,7 @@
     <!-- Luego nuestra lógica principal y del editor (AHORA SOLO app.js) -->
     <script src="{{ url_for('static', path='/js/app.js') }}"></script>
 
-    <!-- Modal para información de entropia -->
+    <!-- Modal for entropy information -->
     <div id="entropy-info-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -319,20 +319,20 @@
     </div>
 
     <script>
-        // Función para mostrar el modal de información de entropía
+        // Function to show the entropy information modal
         function showEntropyInfo(event) {
             event.preventDefault();
             document.getElementById('entropy-info-modal').style.display = 'block';
         }
 
-        // Cerrar el modal cuando se hace clic en la X
+        // Close the modal when clicking on X
         document.querySelectorAll('.close-modal').forEach(function(element) {
             element.addEventListener('click', function() {
                 this.closest('.modal').style.display = 'none';
             });
         });
 
-        // Cerrar el modal al hacer clic fuera de él
+        // Close the modal when clicking outside of it
         window.addEventListener('click', function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
@@ -340,54 +340,54 @@
         });
     </script>
 
-    <!-- Código para envío AJAX del formulario -->
+    <!-- Code for AJAX form submission -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('diagnosis-form');
             
             if (form) {
                 form.addEventListener('submit', function(e) {
-                    e.preventDefault(); // Prevenir envío tradicional
+                    e.preventDefault(); // Prevent traditional submission
                     
-                    // Mostrar indicador de carga
+                    // Show loading indicator
                     navigateStep('step-loading');
                     
-                    // Crear objeto FormData con los datos del formulario
+                    // Create FormData object with form data
                     const formData = new FormData(form);
                     
-                    // Enviar datos mediante fetch API
+                    // Send data using fetch API
                     fetch('/api/calculate', {
                         method: 'POST',
                         body: formData
                     })
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error('Error en la respuesta del servidor: ' + response.status);
+                            throw new Error('Error in server response: ' + response.status);
                         }
                         return response.json();
                     })
                     .then(results => {
-                        // Procesar resultados recibidos
-                        console.log('Resultados recibidos:', results);
+                        // Process received results
+                        console.log('Results received:', results);
                         
-                        // Actualizar DOM con los resultados
+                        // Update DOM with results
                         updateResultsView(results);
                         
-                        // Navegar a la vista de resultados
+                        // Navigate to results view
                         navigateStep('step-results');
                     })
                     .catch(error => {
-                        console.error('Error en el envío AJAX:', error);
-                        showGlobalError('Error al procesar los datos: ' + error.message);
-                        // Volver a la vista anterior
+                        console.error('Error in AJAX submission:', error);
+                        showGlobalError('Error processing data: ' + error.message);
+                        // Return to previous view
                         navigateStep('step-manual-data');
                     });
                 });
             }
             
-            // Función para actualizar la vista de resultados con los datos recibidos
+            // Function to update results view with received data
             function updateResultsView(results) {
-                // Actualizar puntuaciones
+                // Update scores
                 document.querySelector('.score-item:nth-child(1) p').textContent = 
                     `${results.puntuacio_clinica} / {{ config.MAX_RAW_SCORES.clinical }}`;
                 document.querySelector('.score-item:nth-child(1) .score-bar').style.width = 
@@ -403,13 +403,13 @@
                 document.querySelector('.score-item:nth-child(3) .score-bar').style.width = 
                     `${(results.puntuacio_digital / 10 * 100)}%`;
                 
-                // Actualizar entropia - mostrar el valor postprocesado (DistEn2D/2)
+                // Update entropy - show the post-processed value (DistEn2D/2)
                 const entropyPercentage = Math.round((results.max_dist_en_value / 2) * 100);
                 document.querySelector('.entropy-bar').style.width = `${entropyPercentage}%`;
                 document.querySelector('.entropy-marker').style.left = `${entropyPercentage}%`;
                 document.querySelector('.entropy-value').textContent = `${entropyPercentage}%`;
                 
-                // Actualizar termómetro
+                // Update thermometer
                 const thermometerFill = document.querySelector('.thermometer-fill');
                 const thermometerPercentage = document.querySelector('.thermometer-percentage');
                 if (thermometerFill && thermometerPercentage) {
@@ -418,15 +418,15 @@
                     thermometerPercentage.textContent = `${percentage}%`;
                 }
                 
-                // Actualizar clasificación
+                // Update classification
                 document.getElementById('classification-text-id').innerHTML = 
                     `<strong>{{ i18n.get("classification_label", "Risk:") }} ${results.classificacio}</strong>`;
                 
-                // Actualizar interpretación
+                // Update interpretation
                 document.querySelector('.interpretation-text').textContent = results.interpretacio;
             }
             
-            // Botón de nueva evaluación ahora redirecciona a la raíz sin submit
+            // New evaluation button now redirects to root without submit
             const newEvalButtons = document.querySelectorAll('button[onclick*="window.location.href"]');
             newEvalButtons.forEach(button => {
                 button.addEventListener('click', function(e) {
