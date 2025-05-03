@@ -255,22 +255,6 @@
                          
                      </section>
 
-                     <section class="results-summary">
-                         <h3>{{ i18n.get("integrated_score_title", "Global Score") }}</h3>
-                          <!-- Termómetro -->
-                         <div class="thermometer-display" data-score="{{ results.puntuacio_total_integrada if results else 0 }}" data-max="{{ config.MAX_INTEGRATED_SCORE }}">
-                             <div class="thermometer-track">
-                                 <div class="thermometer-fill"></div>
-                             </div>
-                             <div class="thermometer-bulb">
-                                 <div class="thermometer-percentage">{{ (results.puntuacio_total_integrada / config.MAX_INTEGRATED_SCORE * 100)|round|int if results else 0 }}%</div>
-                             </div>
-                         </div>
-                         <!-- Clasificación (texto ya viene de i18n) -->
-                         <p class="classification-text" id="classification-text-id">
-                            <strong>{{ i18n.get("classification_label", "Risk:") }} {{ results.classificacio if results else i18n.get("none", "None") }}</strong>
-                         </p>
-                     </section>
                  </div>
 
                  <p class="interpretation-text">
@@ -408,19 +392,6 @@
                 document.querySelector('.entropy-bar').style.width = `${entropyPercentage}%`;
                 document.querySelector('.entropy-marker').style.left = `${entropyPercentage}%`;
                 document.querySelector('.entropy-value').textContent = `${entropyPercentage}%`;
-                
-                // Update thermometer
-                const thermometerFill = document.querySelector('.thermometer-fill');
-                const thermometerPercentage = document.querySelector('.thermometer-percentage');
-                if (thermometerFill && thermometerPercentage) {
-                    const percentage = Math.round((results.puntuacio_total_integrada / {{ config.MAX_INTEGRATED_SCORE }}) * 100);
-                    thermometerFill.style.height = `${percentage}%`;
-                    thermometerPercentage.textContent = `${percentage}%`;
-                }
-                
-                // Update classification
-                document.getElementById('classification-text-id').innerHTML = 
-                    `<strong>{{ i18n.get("classification_label", "Risk:") }} ${results.classificacio}</strong>`;
                 
                 // Update interpretation
                 document.querySelector('.interpretation-text').textContent = results.interpretacio;
