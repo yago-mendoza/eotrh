@@ -324,21 +324,40 @@ def _calculate_digital_score(max_dist_en_value: float) -> int:
     """Determina la puntuación digital final basada en el valor MÁXIMO de DistEn2D encontrado entre todas las ROIs.
 
     OBJETIVO: Traducir la métrica técnica de máxima complejidad textural (`max_dist_en_value`)
-              a una puntuación de 0-10 dividiendo el valor por 2 y aproximando a la decena más cercana.
-    
-    CAMBIOS:
-    1. Postprocesamiento del DistEn2D: Convertir el valor (que oscila entre 63% y 92%) 
-       a una nueva escala 0-100 dividiéndolo por 2.
-    2. Aproximar el resultado a la decena más cercana y convertirlo a escala 0-10.
+              a una puntuación de 0-10 usando un reescalado lineal donde 0.65 mapea a 0 y 1.0 mapea a 10.
+
+    Args:
+        max_dist_en_value (float): El valor máximo de DistEn2D (esperado en [0, 1]).
+
+    Returns:
+        int: Puntuación digital (0-10).
     """
-    # 1. Postprocesar el valor DistEn2D (convertir dividiendo por 2)
-    scaled_value = max_dist_en_value / 2
-    
-    # 2. Aproximar a la decena más cercana y convertir a escala 0-10
-    rounded_percentage = round(scaled_value * 10) / 10
-    score = round(rounded_percentage * 10)
-    
-    logger.info(f"Max DistEn2D: {max_dist_en_value:.4f} -> Scaled: {scaled_value:.4f} -> Score: {score}/10")
+    # Definir los límites del rango original y el nuevo rango
+    min_orig = 0.65
+    max_orig = 1.0
+    min_nuevo = 0.0
+    max_nuevo = 10.0
+
+    # Asegurar que el valor de entrada esté dentro de los límites esperados para el escalado
+    # Si es menor que min_orig, el score será 0. Si es mayor que max_orig, será 10.
+    clamped_value = max(min_orig, min(max_dist_en_value, max_orig))
+
+    # Aplicar la fórmula de reescalado lineal
+    # Evitar división por cero si min_orig == max_orig (aunque no debería pasar aquí)
+    range_orig = max_orig - min_orig
+    if range_orig <= 0:
+        # Si el rango original es cero o negativo, devolver el límite inferior del nuevo rango
+        # o manejar como un caso especial/error si es apropiado.
+        logger.warning(f"Original range for scaling is invalid ({min_orig=}, {max_orig=}). Returning score 0.")
+        return int(round(min_nuevo))
+
+    scaled_score = ((clamped_value - min_orig) / range_orig) * (max_nuevo - min_nuevo) + min_nuevo
+
+    # Redondear al entero más cercano y asegurar que esté en [0, 10]
+    score = int(round(scaled_score))
+    score = max(0, min(score, 10)) # Asegurar que esté estrictamente en [0, 10]
+
+    logger.info(f"Max DistEn2D: {max_dist_en_value:.4f} -> Clamped: {clamped_value:.4f} -> Linearly Scaled: {scaled_score:.4f} -> Score: {score}/10")
     return score
 
 

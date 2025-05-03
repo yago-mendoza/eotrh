@@ -46,6 +46,12 @@ source venv/bin/activate  # On Linux/Mac
 pip install fastapi uvicorn jinja2 python-multipart opencv-python scikit-image EntropyHub
 ```
 
+   Or simply use the built-in command:
+
+```bash
+pip install -r requirements.txt
+```
+
 ### Running the Application
 
 0. Make sure your virtual environment is activated and running.
@@ -62,7 +68,7 @@ uvicorn main:app --reload
    *   `main:app`: Tells `uvicorn` where to find the FastAPI application object. It looks for a variable named `app` inside the `main.py` file.
    *   `--reload`: Enables auto-reload. The server will automatically restart whenever it detects changes in the source code, which is very convenient during development.
 
-   For third-party hosting:
+   For third-party hosting (ignore if you are not developing/testing):
 
 ```bash
 uvicorn main:app --host=0.0.0.0 --port=$PORT
@@ -73,7 +79,15 @@ uvicorn main:app --host=0.0.0.0 --port=$PORT
 http://localhost:8000
 ```
 
+If it doesn't work, try to use:
+
+```
+http://127.0.0.1:8000
+```
+
 ## Project Structure
+
+Note: might be outdated.
 
 ```
 eotrh_diagnosis_app/
