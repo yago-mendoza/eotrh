@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Usa título desde i18n -->
-    <title>{{ i18n.get("app_title", "EOTRH Assistant") }}</title>
+    <title>{{ i18n.get("app_title", "EOTRH Watch") }}</title>
     
     <!-- Open Graph / Facebook Meta Tags -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://eotrh-software.onrender.com/">
-    <meta property="og:title" content="{{ i18n.get('app_title', 'EOTRH Clinic Assistant') }}">
+    <meta property="og:title" content="{{ i18n.get('app_title', 'EOTRH Watch') }}">
     <meta property="og:description" content="{{ i18n.get('app_description', 'Assistent de Diagnòstic EOTRH per a professionals veterinaris') }}">
     <meta property="og:image" content="https://eotrh-software.onrender.com{{ url_for('static', path='assets/logo.png') }}">
     
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content="https://eotrh-software.onrender.com/">
-    <meta name="twitter:title" content="{{ i18n.get('app_title', 'EOTRH Clinic Assistant') }}">
+    <meta name="twitter:title" content="{{ i18n.get('app_title', 'EOTRH Watch') }}">
     <meta name="twitter:description" content="{{ i18n.get('app_description', 'Assistent de Diagnòstic EOTRH per a professionals veterinaris') }}">
     <meta name="twitter:image" content="https://eotrh-software.onrender.com{{ url_for('static', path='assets/logo.png') }}">
     
@@ -170,7 +170,7 @@
              <img src="{{ url_for('static', path='assets/logo.png') }}"
                   alt="{{ i18n.get('logo_alt_text', 'App Logo') }}"
                   class="app-logo">
-            <h1>{{ i18n.get("app_title", "EOTRH Clinic Assistant") }}</h1>
+            <h1>{{ i18n.get("app_title", "EOTRH Watch") }}</h1>
         </header>
 
         <!-- Barra de Progrés (usa textos i18n) -->
@@ -504,7 +504,6 @@
                                          <span class="findings-text">{{ i18n.get("radiographic_stage_name_none", "N/A") }}</span>
                                      </div>
                                      <div class="interpretive-comment">
-                                         <p><strong>{{ i18n.get("radiographic_desc_label", "Description") }}:</strong></p>
                                          <p class="comment-text">{{ i18n.get("radiographic_desc_none", "Not available") }}</p>
                                      </div>
                                  {% endif %}
