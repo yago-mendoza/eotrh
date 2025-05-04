@@ -252,7 +252,7 @@ class WelcomeWindow(QWidget):
             logo_path = "resources/logo.png"
             logo_pixmap = QPixmap(logo_path)
             if not logo_pixmap.isNull():
-                logo_pixmap = logo_pixmap.scaled(300, 300, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                logo_pixmap = logo_pixmap.scaled(300, 300, Qt.KeepAspectRatio, Qt.SmoothTranstooth_shapetion)
                 img.setPixmap(logo_pixmap)
                 img.setAlignment(Qt.AlignCenter)
                 layout.addWidget(img)
@@ -333,7 +333,7 @@ class ClinicalLayer(QWidget):
                 ("2-3 purulent or 4-6 serous (2 points)", 2),
                 (">3 purulent or >6 serous (3 points)", 3)
             ]),
-            ("Gingival recession", [
+            ("Gingival gingival_recession", [
                 ("<1/3 of the root exposed (1 point)", 1),
                 ("<2/3 of the root exposed (2 points)", 2),
                 ("Whole root exposed (3 points)", 3)
@@ -729,7 +729,7 @@ import questionary
 def ask_clinical_signs():
     total_score = 0
     
-    # Fistulas
+    # Fistulae
     fistulae_response = questionary.select(
         "Fistulae:",
         choices=[
@@ -739,15 +739,15 @@ def ask_clinical_signs():
         ]).ask()
     total_score += int(fistulae_response[fistulae_response.find('(')+1])
 
-    # Gingival recession
-    recession_response = questionary.select(
-        "Gingival recession:",
+    # Gingival gingival_recession
+    gingival_recession_response = questionary.select(
+        "Gingival gingival_recession:",
         choices=[
             "<1/3 of the root exposed (1 point)",
             "<2/3 of the root exposed (2 points)",
             "Whole root exposed (3 points)"
         ]).ask()
-    total_score += int(recession_response[recession_response.find('(')+1])
+    total_score += int(gingival_recession_response[gingival_recession_response.find('(')+1])
 
     # Bulbous thickening of the alveolar region
     bulbous_response = questionary.select(

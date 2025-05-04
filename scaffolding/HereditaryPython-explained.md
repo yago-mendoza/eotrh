@@ -46,7 +46,7 @@ The digital analysis uses texture analysis based on 2D Distance Entropy (DistEn2
 
 The clinical evaluation assesses:
 - Fistulae presence and severity
-- Gingival recession
+- Gingival gingival_recession
 - Subgingival bulbous enlargement
 - Gingivitis
 - Bite angle not correlated with age

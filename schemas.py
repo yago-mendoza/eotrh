@@ -9,17 +9,17 @@ from typing import List, Tuple, Dict, Any, Optional
 # NOTA: Asumimos que el frontend enviará el *valor numérico* del score
 class ManualFormData(BaseModel):
     # Clinical
-    fistules: int = Field(..., ge=0)
-    recessio: int = Field(..., ge=0)
-    bulbos: int = Field(..., ge=0)
+    fistulae: int = Field(..., ge=0)
+    gingival_recession: int = Field(..., ge=0)
+    subgingival_bulbous_enlargement: int = Field(..., ge=0)
     gingivitis: int = Field(..., ge=0)
-    mossegada: int = Field(..., ge=0)
+    bite_angle_not_correlated_with_age: int = Field(..., ge=0)
     # Radiographic
-    dents_afectades: int = Field(..., ge=0)
-    absents: int = Field(..., ge=0)
-    forma: int = Field(..., ge=0)
-    estructura: int = Field(..., ge=0)
-    superficie: int = Field(..., ge=0)
+    teeth_affected: int = Field(..., ge=0)
+    missing_or_extracted_teeths: int = Field(..., ge=0)
+    tooth_shape: int = Field(..., ge=0)
+    tooth_structure: int = Field(..., ge=0)
+    tooth_surface: int = Field(..., ge=0)
 
 # Modelo para validar el JSON de ROIs
 class RoiData(RootModel[List[List[Tuple[int, int]]]]):

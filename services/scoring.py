@@ -15,11 +15,11 @@ logger = logging.getLogger(__name__)
 def calculate_clinical_score(data: ManualFormData) -> int:
     """Calcula la puntuació clínica des d'un model validat."""
     total_score = (
-        data.fistules +
-        data.recessio +
-        data.bulbos +
+        data.fistulae +
+        data.gingival_recession +
+        data.subgingival_bulbous_enlargement +
         data.gingivitis +
-        data.mossegada
+        data.bite_angle_not_correlated_with_age
     )
     # Limitar al máximo definido en config
     max_score = config.MAX_RAW_SCORES.get('clinical', 17)
@@ -30,11 +30,11 @@ def calculate_clinical_score(data: ManualFormData) -> int:
 def calculate_radiographic_score(data: ManualFormData) -> int:
     """Calcula la puntuació radiogràfica des d'un model validat."""
     total_score = (
-        data.dents_afectades +
-        data.absents +
-        data.forma +
-        data.estructura +
-        data.superficie
+        data.teeth_affected +
+        data.missing_or_extracted_teeths +
+        data.tooth_shape +
+        data.tooth_structure +
+        data.tooth_surface
     )
     # Limitar al máximo definido en config
     max_score = config.MAX_RAW_SCORES.get('radio', 14)

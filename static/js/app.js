@@ -578,7 +578,7 @@ const RoiEditor = (function() {
          const widthRatio = (displayedWidth > 0) ? originalWidth / displayedWidth : 1;
          const heightRatio = (displayedHeight > 0) ? originalHeight / displayedHeight : 1;
 
-         // Gather additional diagnostic information if in debug mode
+         // Gather additional diagnostic intion if in debug mode
          if (DEBUG_MODE) {
              const img = background.getElement();
              const debugInfo = {

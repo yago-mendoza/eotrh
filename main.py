@@ -55,16 +55,16 @@ async def read_root(request: Request):
 @app.post("/api/calculate", response_class=JSONResponse)
 async def api_calculate(
     # Datos del formulario manual (FastAPI los parsea automáticamente)
-    fistules: int = Form(...),
-    recessio: int = Form(...),
-    bulbos: int = Form(...),
+    fistulae: int = Form(...),
+    gingival_recession: int = Form(...),
+    subgingival_bulbous_enlargement: int = Form(...),
     gingivitis: int = Form(...),
-    mossegada: int = Form(...),
-    dents_afectades: int = Form(...),
-    absents: int = Form(...),
-    forma: int = Form(...),
-    estructura: int = Form(...),
-    superficie: int = Form(...),
+    bite_angle_not_correlated_with_age: int = Form(...),
+    teeth_affected: int = Form(...),
+    missing_or_extracted_teeths: int = Form(...),
+    tooth_shape: int = Form(...),
+    tooth_structure: int = Form(...),
+    tooth_surface: int = Form(...),
     # Datos ROI (como string JSON)
     roi_data: str = Form(...), # Recibimos como string
     # Archivo de imagen
@@ -79,10 +79,10 @@ async def api_calculate(
     try:
         # 1. Validar datos manuales con Pydantic
         manual_data = ManualFormData(
-            fistules=fistules, recessio=recessio, bulbos=bulbos,
-            gingivitis=gingivitis, mossegada=mossegada,
-            dents_afectades=dents_afectades, absents=absents, forma=forma,
-            estructura=estructura, superficie=superficie
+            fistulae=fistulae, gingival_recession=gingival_recession, subgingival_bulbous_enlargement=subgingival_bulbous_enlargement,
+            gingivitis=gingivitis, bite_angle_not_correlated_with_age=bite_angle_not_correlated_with_age,
+            teeth_affected=teeth_affected, missing_or_extracted_teeths=missing_or_extracted_teeths, tooth_shape=tooth_shape,
+            tooth_structure=tooth_structure, tooth_surface=tooth_surface
         )
         
         # 2. Validar y parsear datos ROI
@@ -126,16 +126,16 @@ async def api_calculate(
 async def handle_calculation(
     request: Request,
     # Datos del formulario manual (FastAPI los parsea automáticamente)
-    fistules: int = Form(...),
-    recessio: int = Form(...),
-    bulbos: int = Form(...),
+    fistulae: int = Form(...),
+    gingival_recession: int = Form(...),
+    subgingival_bulbous_enlargement: int = Form(...),
     gingivitis: int = Form(...),
-    mossegada: int = Form(...),
-    dents_afectades: int = Form(...),
-    absents: int = Form(...),
-    forma: int = Form(...),
-    estructura: int = Form(...),
-    superficie: int = Form(...),
+    bite_angle_not_correlated_with_age: int = Form(...),
+    teeth_affected: int = Form(...),
+    missing_or_extracted_teeths: int = Form(...),
+    tooth_shape: int = Form(...),
+    tooth_structure: int = Form(...),
+    tooth_surface: int = Form(...),
     # Datos ROI (como string JSON)
     roi_data: str = Form(...), # Recibimos como string
     # Archivo de imagen
@@ -150,10 +150,10 @@ async def handle_calculation(
     # 1. Validar datos manuales con Pydantic
     try:
         manual_data = ManualFormData(
-            fistules=fistules, recessio=recessio, bulbos=bulbos,
-            gingivitis=gingivitis, mossegada=mossegada,
-            dents_afectades=dents_afectades, absents=absents, forma=forma,
-            estructura=estructura, superficie=superficie
+            fistulae=fistulae, gingival_recession=gingival_recession, subgingival_bulbous_enlargement=subgingival_bulbous_enlargement,
+            gingivitis=gingivitis, bite_angle_not_correlated_with_age=bite_angle_not_correlated_with_age,
+            teeth_affected=teeth_affected, missing_or_extracted_teeths=missing_or_extracted_teeths, tooth_shape=tooth_shape,
+            tooth_structure=tooth_structure, tooth_surface=tooth_surface
         )
         logger.debug("Manual form data validated successfully.")
     except ValidationError as e:

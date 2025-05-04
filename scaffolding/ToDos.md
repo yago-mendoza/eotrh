@@ -25,14 +25,14 @@
     - [X] ROI-based texture analysis with EntropyHub
     - [X] Calculation of Distance Entropy (DistEn) metrics
   - [X] Layer 2: Clinical signs assessment
-    - [X] Scoring system for fistules
-    - [X] Scoring system for gingival recession
+    - [X] Scoring system for fistulae
+    - [X] Scoring system for gingival gingival_recession
     - [X] Scoring system for bulbous appearance
     - [X] Scoring system for gingivitis
     - [X] Scoring system for bite angle
   - [X] Layer 3: Radiographic signs assessment
     - [X] Scoring system for affected teeth
-    - [X] Scoring system for absent teeth
+    - [X] Scoring system for missing_or_extracted_teeth teeth
     - [X] Scoring system for tooth shape
     - [X] Scoring system for tooth structure
     - [X] Scoring system for tooth surface

@@ -30,17 +30,17 @@ Additional proposed factors include ischemic necrosis (Caldwell, 2007), genetic 
 ### Clinical symptoms and lesions
 Affected horses may be asymptomatic or show nonspecific signs when diagnosed. These include pain, masticatory difficulty, food rejection (*quidding*), hypersalivation, halitosis, bitting problems, head shaking, behavioral changes, hypersensitivity to the bit, periodic inappetence, and weight loss. In older horses, fractured or avulsed teeth may occur as a consequence of the resorptive disease. (Limone et al., 2020).
 
-Findings during the oral examination typically include lesions such as enlargement of submandibular lymph nodes, loss of dental papillae, fistulae, severe inflammation with calculus accumulation, secretion and food debris, gingival recession or hyperplasia, bulbous dental enlargement, visible resorptive lesions, and damage beneath accumulated calculus (Smedley et al., 2020). (see below figures 1 and 2).
+Findings during the oral examination typically include lesions such as enlargement of submandibular lymph nodes, loss of dental papillae, fistulae, severe inflammation with calculus accumulation, secretion and food debris, gingival gingival_recession or hyperplasia, bulbous dental enlargement, visible resorptive lesions, and damage beneath accumulated calculus (Smedley et al., 2020). (see below figures 1 and 2).
 
 Prominent juga secondary to tooth expansion/extrusion may be present with or without associated draining tracts. As the disease progresses, additional clinical findings may include pulp exposure, advanced periodontal disease, bone disease, tooth mobility, fractures of the tooth or surrounding bone, or tooth loss (Limone et al., 2020).
 
 Three distinct clinical manifestations of EOTRH have been described: a predominantly hyperplastic form, a predominantly resorptive form and a mixed form characterized by a combination of resorption and hypercementosis. (Smedley et al., 2015)
 
-In this context, Tretow et al. (2025) describe a symptom complex indicative of EOTRH, consisting of: non-age correlating bite angle, bulbous enlargement of gingiva, gingival recession, fistulae and gingivitis.
+In this context, Tretow et al. (2025) describe a symptom complex indicative of EOTRH, consisting of: non-age correlating bite angle, bulbous enlargement of gingiva, gingival gingival_recession, fistulae and gingivitis.
 
 **Figure 1 and 2:**  
 Two distinct clinical cases of advanced EOTRH.  
-Figure 1 shows severe gingival recession, bulbous dental enlargement, and significant inflammation with calculus covering the incisors.  
+Figure 1 shows severe gingival gingival_recession, bulbous dental enlargement, and significant inflammation with calculus covering the incisors.  
 Figure 2 presents extensive necrotic lesions, visible fistulae, pulp exposure, and signs of tooth or bone fracture, accompanied by severe loss of soft tissue coverage.  
 *Images kindly provided by Erik Ranobell, 2025. Used with permission.*
 
@@ -128,7 +128,7 @@ The manual clinical assessment layer of EOTRH Watch is based on a clinical scori
 | Fistulae | 1 purulent or up to 3 serous | 1 |
 |  | 2–3 purulent or 4–6 serous | 2 |
 |  | >3 purulent or >6 serous | 3 |
-| Gingival recession | <1/3 of the root exposed | 1 |
+| Gingival gingival_recession | <1/3 of the root exposed | 1 |
 |  | <2/3 of the root exposed | 2 |
 |  | Whole root exposed | 3 |
 | Subgingival bulbous enlargement | No | 0 |
@@ -156,7 +156,7 @@ The interpretive comment serves both to describe the clinical stage and to indic
 | Clinical Stage | Clinical Findings | Score | Interpretive Comment |
 |----------------|-------------------|-------|---------------------|
 | 0 | No findings, healthy | 0 | Clinical normality. Subclinical disease cannot be ruled out. Radiographic assesment is recommended in older horses (>20 years) |
-| 1 | Suspicious | 1–2 | Minimal and non-specific signs. May be age-related. Clinical indicators such as gingival recession or gingivitis increasethe risk of underlying disease and should prompt further monitoring. Radiographic assesment is advised. |
+| 1 | Suspicious | 1–2 | Minimal and non-specific signs. May be age-related. Clinical indicators such as gingival gingival_recession or gingivitis increasethe risk of underlying disease and should prompt further monitoring. Radiographic assesment is advised. |
 | 2 | Mild | 3–5 | Presence of clear clinical signs but localized. Radiographic assesment is recommended to stage the lesions. |
 | 3 | Moderate | 6–9 | Multiple clinical signs with moderate intensity. Suggestive of disease progression. Radiographic assesment is strongly recommended to evaluate lesion severity and progression. |
 | 4 | Severe | ≥10 | Generalized and severe clinical involvement. Common findings include gingival swelling, fistulae, and bite angle not correlated with age. Radiological assessment is essential at this stage to accurately characterize lesion severity, as the extent of radiographic changes and associated pain may warrant extraction of the affected teeth. |
@@ -219,7 +219,7 @@ Radiological scoring chart used in EOTRH Detect, adopted from Tretow et al. (202
 |-------|-------|-------------|
 | Normal | 0 | No abnormal radiological findings. However, the first pathological changes may begin on the palatal/lingual side and may not yet be visible. In older horses or in the presence of clinical signs, periodic radiographic monitoring is advised. |
 | Suspicious | 1–2 | Tooth shape preserved but sporadic deviations: slightly blunted root tip, surface irregular/rough, slightly altered tooth structure. Continued radiographic monitoring and clinical evaluations are recommended. |
-| Mild | 2–5 | Tooth shape preserved, slightly blunted root tip, surface irregular/rough, slightly altered tooth structure. Extraction is not usually needed at this stage but regular monitoring is essential to assess structural changes or progression. Measuring gingival recession can help track disease progression. |
+| Mild | 2–5 | Tooth shape preserved, slightly blunted root tip, surface irregular/rough, slightly altered tooth structure. Extraction is not usually needed at this stage but regular monitoring is essential to assess structural changes or progression. Measuring gingival gingival_recession can help track disease progression. |
 | Moderate | 6–9 | Tooth shape largely preserved, intra-alveolar tooth part is not wider than the clinical crown, obviously blunted root tip, surface irregular/rough, moderately altered tooth structure. Treatment planning should include follow-up radiographs and may require extraction of teeth that are painful, nonvital, or structurally compromised. |
 | Severe | ≥10 | Loss of tooth shape, intra-alveolar tooth part is wider than the clinical crown, surface obviously irregular/rough, severely altered tooth structure. Extraction is often recommended, specially once supragingival lesions, alveolitis, osteomyelitis, tooth fractures, and extensive resorption of the reserve crown and root are detectable radiographically. The decision should be based on the veterinarian's clinical judgment, integrating both radiographic and clinical findings, with particular attention to a thorough dental pain assessment. Incisor extraction, when indicated, has a favorable prognosis and can significantly improve the horse's welfare. |
 
@@ -250,7 +250,7 @@ To address the technical and analytical limitations encountered in the developme
 
 In terms of data reliability, the effectiveness of the automated layer remains constrained by the size and diversity of the dataset. A preliminary set of radiographs was collected with the generous collaboration of several veterinarians: Dr. Sandra Fortuny, Dr. Erik Ranobell, Dr. José María Galafate, Dr. Manuel Novales, Dr. Inés Santos, and Dr. Constanza Mora. However, further validation using a broader and more representative sample is essential. Continued clinical application and the contribution of new cases will be critical to refining the diagnostic accuracy of the tool.
 
-The manual clinical assessment layer has proven functional, although it tends to overestimate disease severity in geriatric horses due to age-related changes such as gingival recession. To improve diagnostic specificity, it may be beneficial to assign greater weight to advanced inflammatory signs—such as fistulae, gingival bleeding, or marked recession—as suggested by Tretow et al. (2025). However, this adjustment was not implemented in the current version, as it would have significantly increased the complexity of the software development process.
+The manual clinical assessment layer has proven functional, although it tends to overestimate disease severity in geriatric horses due to age-related changes such as gingival gingival_recession. To improve diagnostic specificity, it may be beneficial to assign greater weight to advanced inflammatory signs—such as fistulae, gingival bleeding, or marked gingival_recession—as suggested by Tretow et al. (2025). However, this adjustment was not implemented in the current version, as it would have significantly increased the complexity of the software development process.
 
 The limitations observed in the radiographic layer of EOTRH Watch reflect broader systemic gaps in equine veterinary dentistry, particularly concerning diagnostic frameworks. Existing radiological classification systems were primarily designed for brachydont species and do not adequately capture the morphological and pathological complexity of equine dentition (Albers et al., 2022, 2023). This highlights the pressing need for an equine-specific catalogue of radiographic findings—one that addresses not only resorptive lesions but also structural alterations related to hypercementosis. Without such a validated system, early-stage differentiation between pathological and age-related changes remains both clinically challenging and prone to misinterpretation.
 
@@ -326,7 +326,7 @@ inappetence, and weight loss. In older horses, fractured or avulsed teeth may oc
 consequence of the resorptive disease. (Limone et al., 2020).
 Findings during the oral examination typically include lesions such as enlargement of
 submandibular lymph nodes, loss of dental papillae, fistulae, severe inflammation with
-calculus accumulation, secretion and food debris, gingival recession or hyperplasia,
+calculus accumulation, secretion and food debris, gingival gingival_recession or hyperplasia,
 bulbous dental enlargement, visible resorptive lesions, and damage beneath accumulated
 calculus (Smedley et al., 2020). (see below figures 1 and 2).
 Prominent juga secondary to tooth expansion/extrusion may be present with or without
@@ -338,11 +338,11 @@ hyperplastic form, a predominantly resorptive form and a mixed form characterize
 combination of resorption and hypercementosis. (Smedley et al., 2015)
 In this context, Tretow et al. (2025) describe a symptom complex indicative of EOTRH,
 consisting of: non-age correlating bite angle, bulbous enlargement of gingiva, gingival
-recession, fistulae and gingivitis.
+gingival_recession, fistulae and gingivitis.
 Figure 1 and 2:
 Two distinct clinical cases of advanced
 EOTRH.
-Figure 1 shows severe gingival recession,
+Figure 1 shows severe gingival gingival_recession,
 bulbous dental enlargement, and
 significant inflammation with calculus
 covering the incisors.
@@ -528,7 +528,7 @@ Score
 3
 
 Gingival
-recession
+gingival_recession
 
 <1/3 of the root exposed
 <2/3 of the root exposed
@@ -648,7 +648,7 @@ Severe
 ≥10
 
 Minimal and non-specific signs. May be age-related. Clinical indicators such as gingival
-recession or gingivitis increasethe risk of underlying disease and should prompt further
+gingival_recession or gingivitis increasethe risk of underlying disease and should prompt further
 monitoring. Radiographic assesment is advised.
 Presence of clear clinical signs but localized. Radiographic assesment is recommended to
 stage the lesions.
@@ -823,7 +823,7 @@ radiographic monitoring and clinical evaluations are recommended.
 Tooth shape preserved, slightly blunted root tip, surface
 irregular/rough, slightly altered tooth structure. Extraction is not
 usually needed at this stage but regular monitoring is essential to
-assess structural changes or progression. Measuring gingival recession
+assess structural changes or progression. Measuring gingival gingival_recession
 can help track disease progression.
 Tooth shape largely preserved, intra-alveolar tooth part is not wider
 than the clinical crown, obviously blunted root tip, surface
@@ -903,9 +903,9 @@ Constanza Mora. However, further validation using a broader and more representat
 be critical to refining the diagnostic accuracy of the tool.
 The manual clinical assessment layer has proven functional, although it tends to
 overestimate disease severity in geriatric horses due to age-related changes such as
-gingival recession. To improve diagnostic specificity, it may be beneficial to assign
+gingival gingival_recession. To improve diagnostic specificity, it may be beneficial to assign
 greater weight to advanced inflammatory signs—such as fistulae, gingival bleeding, or
-marked recession—as suggested by Tretow et al. (2025). However, this adjustment was
+marked gingival_recession—as suggested by Tretow et al. (2025). However, this adjustment was
 not implemented in the current version, as it would have significantly increased the
 complexity of the software development process.
 The limitations observed in the radiographic layer of EOTRH Watch reflect broader
@@ -922,7 +922,7 @@ layer. Mild EOTRH-like changes, for example, have been observed radiographically
 all horses over 14 years of age (Rehrl et al., 2017), suggesting that certain features
 currently interpreted as pathological may, in fact, reflect normal aging. This overlap calls
 for refined staging systems grounded in longitudinal studies and population-level data.
-To complement radiographic findings, the routine monitoring of gingival recession has
+To complement radiographic findings, the routine monitoring of gingival gingival_recession has
 been proposed as a practical clinical tool to support early detection in cases where
 radiographic evidence is ambiguous (Siebert, 2024).
 In addition, the manual radiographic layer has another limitation that lies in the absence
