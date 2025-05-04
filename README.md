@@ -1,5 +1,5 @@
 # Assistent de Diagnòstic Precoç EOTRH
-# Early EOTRH Diagnostic Assistant
+# EOTRH Watch
 
 This FastAPI web application provides a diagnostic aid tool for Equine Odontoclastic Tooth Resorption and Hypercementosis (EOTRH) in horses, based on the methodology described by Górski (2022) and Tretow et al. (2025). It integrates three layers of information: automated digital analysis (simplified), manual clinical signs, and manual radiological signs.
 

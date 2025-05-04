@@ -19,7 +19,7 @@ logging.basicConfig(level=config.LOGGING_LEVEL, format=config.LOGGING_FORMAT)
 logger = logging.getLogger(__name__)
 
 # --- Inicialización FastAPI ---
-app = FastAPI(title="EOTRH Clinic Assistant")
+app = FastAPI(title="EOTRH Watch")
 
 # Montar archivos estáticos (CSS, JS, Imágenes)
 app.mount("/static", StaticFiles(directory="static"), name="static")
