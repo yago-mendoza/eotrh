@@ -25,6 +25,88 @@
     <!-- Gauge.js ya no se usa, usamos termómetro CSS -->
     <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    
+    <!-- Inline styles for clinical findings section -->
+    <style>
+        .clinical-findings-section {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+        }
+        
+        .clinical-stage {
+            margin-bottom: 10px;
+        }
+        
+        .stage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .stage-label {
+            font-size: 1.1em;
+            margin: 0;
+            font-weight: bold;
+        }
+        
+        .findings-text {
+            font-weight: bold;
+            padding: 3px 10px;
+            border-radius: 4px;
+            color: white;
+        }
+        
+        .comment-text {
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        
+        /* Stage-specific colors */
+        .stage-0.findings-text {
+            background-color: #28a745;
+        }
+        
+        .stage-1.findings-text {
+            background-color: #17a2b8;
+        }
+        
+        .stage-2.findings-text {
+            background-color: #fd7e14;
+        }
+        
+        .stage-3.findings-text {
+            background-color: #6f42c1;
+        }
+        
+        .stage-4.findings-text {
+            background-color: #dc3545;
+        }
+        
+        .interpretive-comment {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 6px;
+            border-left: 4px solid #6c757d;
+        }
+        
+        /* New border styles for specific sections */
+        .score-item.digital-section {
+            border: 2px solid #90caf9;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        
+        .entropy-analysis {
+            border: 2px solid #90caf9;
+            border-radius: 8px;
+            padding: 15px;
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -227,7 +309,7 @@
                                  <p>{{ results.puntuacio_radio if results else "0" }} / {{ config.MAX_RAW_SCORES.radio }}</p>
                                  <div class="score-bar-container"><div class="score-bar radiographic" style="width: {{ (results.puntuacio_radio / config.MAX_RAW_SCORES.radio * 100)|int if results else 0 }}%;"></div></div>
                              </div>
-                             <div class="score-item">
+                             <div class="score-item digital-section">
                                  <!-- Tooltip dinámico con valor DistEn -->
                                  {% set digital_tooltip = i18n.get('digital_score_tooltip', '').format(max_dist_en_value=results.max_dist_en_value if results else 0) %}
                                  <h4>{{ i18n.get("digital_score_label", "Digital") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ digital_tooltip if digital_tooltip else i18n.get('digital_score_no_tooltip', 'Digital score details') }}"></h4>
@@ -249,6 +331,64 @@
                                  <!-- Mostrar el valor postprocesado como porcentaje -->
                                  <div class="entropy-value">{{ ((results.max_dist_en_value / 2) * 100)|round|int if results else 0 }}%</div>
                              </div>
+                             
+                             <!-- New Clinical Findings section based on digital score -->
+                             <div class="clinical-findings-section">
+                                 <div class="clinical-stage">
+                                     {% if results %}
+                                         {% if results.puntuacio_digital == 0 %}
+                                             <div class="stage-header">
+                                                 <h4 class="stage-label stage-0">{{ i18n.get("clinical_stage_label", "Clinical Stage") }}: 0</h4>
+                                                 <span class="findings-text stage-0">{{ i18n.get("clinical_findings_0", "No findings, healthy") }}</span>
+                                             </div>
+                                         {% elif results.puntuacio_digital >= 1 and results.puntuacio_digital <= 2 %}
+                                             <div class="stage-header">
+                                                 <h4 class="stage-label stage-1">{{ i18n.get("clinical_stage_label", "Clinical Stage") }}: 1</h4>
+                                                 <span class="findings-text stage-1">{{ i18n.get("clinical_findings_1", "Suspicious") }}</span>
+                                             </div>
+                                         {% elif results.puntuacio_digital >= 3 and results.puntuacio_digital <= 5 %}
+                                             <div class="stage-header">
+                                                 <h4 class="stage-label stage-2">{{ i18n.get("clinical_stage_label", "Clinical Stage") }}: 2</h4>
+                                                 <span class="findings-text stage-2">{{ i18n.get("clinical_findings_2", "Mild") }}</span>
+                                             </div>
+                                         {% elif results.puntuacio_digital >= 6 and results.puntuacio_digital <= 9 %}
+                                             <div class="stage-header">
+                                                 <h4 class="stage-label stage-3">{{ i18n.get("clinical_stage_label", "Clinical Stage") }}: 3</h4>
+                                                 <span class="findings-text stage-3">{{ i18n.get("clinical_findings_3", "Moderate") }}</span>
+                                             </div>
+                                         {% elif results.puntuacio_digital >= 10 %}
+                                             <div class="stage-header">
+                                                 <h4 class="stage-label stage-4">{{ i18n.get("clinical_stage_label", "Clinical Stage") }}: 4</h4>
+                                                 <span class="findings-text stage-4">{{ i18n.get("clinical_findings_4", "Severe") }}</span>
+                                             </div>
+                                         {% endif %}
+                                     {% else %}
+                                         <div class="stage-header">
+                                             <h4 class="stage-label">{{ i18n.get("clinical_stage_label", "Clinical Stage") }}: -</h4>
+                                             <span class="findings-text">{{ i18n.get("clinical_findings_none", "Not available") }}</span>
+                                         </div>
+                                     {% endif %}
+                                 </div>
+                                 
+                                 <div class="interpretive-comment">
+                                     {% if results %}
+                                         {% if results.puntuacio_digital == 0 %}
+                                             <p class="comment-text stage-0">{{ i18n.get("interpretive_comment_0", "Clinical normality. Subclinical disease cannot be ruled out. Radiographic assesment is recommended in older horses (>20 years)") }}</p>
+                                         {% elif results.puntuacio_digital >= 1 and results.puntuacio_digital <= 2 %}
+                                             <p class="comment-text stage-1">{{ i18n.get("interpretive_comment_1", "Minimal and non-specific signs. May be age-related. Clinical indicators such as gingival recession or gingivitis increase the risk of underlying disease and should prompt further monitoring. Radiographic assesment is advised.") }}</p>
+                                         {% elif results.puntuacio_digital >= 3 and results.puntuacio_digital <= 5 %}
+                                             <p class="comment-text stage-2">{{ i18n.get("interpretive_comment_2", "Presence of clear clinical signs but localized. Radiographic assesment is recommended to stage the lesions.") }}</p>
+                                         {% elif results.puntuacio_digital >= 6 and results.puntuacio_digital <= 9 %}
+                                             <p class="comment-text stage-3">{{ i18n.get("interpretive_comment_3", "Multiple clinical signs with moderate intensity. Suggestive of disease progression. Radiographic assesment is strongly recommended to evaluate lesion severity and progression") }}</p>
+                                         {% elif results.puntuacio_digital >= 10 %}
+                                             <p class="comment-text stage-4">{{ i18n.get("interpretive_comment_4", "Generalized and severe clinical involvement. Common findings include gingival swelling, fistulae, and bite angle not correlated with age. Radiological assessment is essential at this stage to accurately characterize lesion severity, as the extent of radiographic changes and associated pain may warrant extraction of the affected teeth.") }}</p>
+                                         {% endif %}
+                                     {% else %}
+                                         <p class="comment-text">{{ i18n.get("interpretive_comment_none", "Not available") }}</p>
+                                     {% endif %}
+                                 </div>
+                             </div>
+                             
                              <div class="entropy-interpretation">
                                  <p>
                                      {{ i18n.get("entropy_interpretation", "Aquest valor indica una alta irregularitat en la textura de la dent a la regió analitzada. Pot ser un indicador precoç de canvis morfològics associats a EOTRH, fins i tot amb signes clínics mínims.") }}
@@ -392,6 +532,8 @@
                 document.querySelector('.score-item:nth-child(2) .score-bar').style.width = 
                     `${(results.puntuacio_radio / {{ config.MAX_RAW_SCORES.radio }} * 100)}%`;
                 
+                // Ensure digital score item has the digital-section class
+                document.querySelector('.score-item:nth-child(3)').classList.add('digital-section');
                 document.querySelector('.score-item:nth-child(3) p').textContent = 
                     `${results.puntuacio_digital} / 10`;
                 document.querySelector('.score-item:nth-child(3) .score-bar').style.width = 
@@ -402,6 +544,55 @@
                 document.querySelector('.entropy-bar').style.width = `${entropyPercentage}%`;
                 document.querySelector('.entropy-marker').style.left = `${entropyPercentage}%`;
                 document.querySelector('.entropy-value').textContent = `${entropyPercentage}%`;
+                
+                // Update clinical findings based on digital score
+                const digitalScore = results.puntuacio_digital;
+                const stageLabel = document.querySelector('.clinical-stage .stage-label');
+                const findingsText = document.querySelector('.clinical-stage .findings-text');
+                const commentText = document.querySelector('.interpretive-comment .comment-text');
+                
+                // Remove all previous stage classes
+                stageLabel.classList.remove('stage-0', 'stage-1', 'stage-2', 'stage-3', 'stage-4');
+                findingsText.classList.remove('stage-0', 'stage-1', 'stage-2', 'stage-3', 'stage-4');
+                commentText.classList.remove('stage-0', 'stage-1', 'stage-2', 'stage-3', 'stage-4');
+                
+                // Set new stage based on digital score
+                let stageNum, stageFindingsText, stageCommentText, stageClass;
+                
+                if (digitalScore === 0) {
+                    stageNum = 0;
+                    stageFindingsText = "{{ i18n.get('clinical_findings_0', 'No findings, healthy') }}";
+                    stageCommentText = "{{ i18n.get('interpretive_comment_0', 'Clinical normality. Subclinical disease cannot be ruled out. Radiographic assesment is recommended in older horses (>20 years)') }}";
+                    stageClass = 'stage-0';
+                } else if (digitalScore >= 1 && digitalScore <= 2) {
+                    stageNum = 1;
+                    stageFindingsText = "{{ i18n.get('clinical_findings_1', 'Suspicious') }}";
+                    stageCommentText = "{{ i18n.get('interpretive_comment_1', 'Minimal and non-specific signs. May be age-related. Clinical indicators such as gingival recession or gingivitis increase the risk of underlying disease and should prompt further monitoring. Radiographic assesment is advised.') }}";
+                    stageClass = 'stage-1';
+                } else if (digitalScore >= 3 && digitalScore <= 5) {
+                    stageNum = 2;
+                    stageFindingsText = "{{ i18n.get('clinical_findings_2', 'Mild') }}";
+                    stageCommentText = "{{ i18n.get('interpretive_comment_2', 'Presence of clear clinical signs but localized. Radiographic assesment is recommended to stage the lesions.') }}";
+                    stageClass = 'stage-2';
+                } else if (digitalScore >= 6 && digitalScore <= 9) {
+                    stageNum = 3;
+                    stageFindingsText = "{{ i18n.get('clinical_findings_3', 'Moderate') }}";
+                    stageCommentText = "{{ i18n.get('interpretive_comment_3', 'Multiple clinical signs with moderate intensity. Suggestive of disease progression. Radiographic assesment is strongly recommended to evaluate lesion severity and progression') }}";
+                    stageClass = 'stage-3';
+                } else if (digitalScore >= 10) {
+                    stageNum = 4;
+                    stageFindingsText = "{{ i18n.get('clinical_findings_4', 'Severe') }}";
+                    stageCommentText = "{{ i18n.get('interpretive_comment_4', 'Generalized and severe clinical involvement. Common findings include gingival swelling, fistulae, and bite angle not correlated with age. Radiological assessment is essential at this stage to accurately characterize lesion severity, as the extent of radiographic changes and associated pain may warrant extraction of the affected teeth.') }}";
+                    stageClass = 'stage-4';
+                }
+                
+                // Update the DOM elements
+                stageLabel.textContent = `{{ i18n.get("clinical_stage_label", "Clinical Stage") }}: ${stageNum}`;
+                stageLabel.classList.add(stageClass);
+                findingsText.textContent = stageFindingsText;
+                findingsText.classList.add(stageClass);
+                commentText.textContent = stageCommentText;
+                commentText.classList.add(stageClass);
                 
                 // Update interpretation
                 document.querySelector('.interpretation-text').textContent = results.interpretacio;
