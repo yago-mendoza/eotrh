@@ -95,15 +95,29 @@
         
         /* New border styles for specific sections */
         .score-item.digital-section {
-            border: 2px solid #90caf9;
+            border: 2px solid #90caf9; /* Blue border for digital */
+            border-radius: 8px;
+            padding: 12px;
+        }
+        
+        .score-item.radiographic-section { /* Green border for radiographic score */
+            border: 2px solid #a5d6a7; /* Light green */
             border-radius: 8px;
             padding: 12px;
         }
         
         .entropy-analysis {
-            border: 2px solid #90caf9;
+            border: 2px solid #90caf9; /* Blue border for entropy (linked to digital) */
             border-radius: 8px;
             padding: 15px;
+        }
+        
+        .radiographic-interpretation-section { /* Green border for radiographic interpretation */
+            border: 2px solid #a5d6a7; /* Light green */
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px; /* Add some space above */
+            background-color: #f8f9fa; /* Match other sections */
         }
     </style>
 </head>
@@ -303,7 +317,7 @@
                                  <p>{{ results.puntuacio_clinica if results else "0" }} / {{ config.MAX_RAW_SCORES.clinical }}</p>
                                  <div class="score-bar-container"><div class="score-bar clinical" style="width: {{ (results.puntuacio_clinica / config.MAX_RAW_SCORES.clinical * 100)|int if results else 0 }}%;"></div></div>
                              </div>
-                             <div class="score-item">
+                             <div class="score-item radiographic-section"> <!-- Added radiographic-section class -->
                                  <h4>{{ i18n.get("radiographic_score_label", "Radiographic") }} <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('radiographic_score_tooltip', 'Radiographic score details') }}"></h4>
                                  <p>{{ results.puntuacio_radio if results else "0" }} / {{ config.MAX_RAW_SCORES.radio }}</p>
                                  <div class="score-bar-container"><div class="score-bar radiographic" style="width: {{ (results.puntuacio_radio / config.MAX_RAW_SCORES.radio * 100)|int if results else 0 }}%;"></div></div>
@@ -317,7 +331,56 @@
                              </div>
                          </div>
                          
-                         <!-- Nou bloc d'Anàlisi Entropia del ROI -->
+                         <!-- START: New Radiographic Interpretation Section (MOVED UP) -->
+                         <div class="radiographic-interpretation-section">
+                             <h3>{{ i18n.get("radiographic_interpretation_title", "Radiographic Interpretation") }}</h3>
+                             <div class="clinical-stage"> <!-- Reusing class name, but context is radiographic -->
+                                 {% if results %}
+                                     {% set radio_score = results.puntuacio_radio %}
+                                     {% if radio_score == 0 %}
+                                         {% set stage_name = i18n.get("radiographic_stage_name_0", "Normal") %}
+                                         {% set stage_comment = i18n.get("radiographic_stage_comment_0", "No abnormal radiological findings. However, the first pathological changes may begin on the palatal/lingual side and may not yet be visible. In older horses or in the presence of clinical signs, periodic radiographic monitoring is advised.") %}
+                                         {% set stage_class = "stage-0" %}
+                                     {% elif radio_score >= 1 and radio_score <= 2 %}
+                                         {% set stage_name = i18n.get("radiographic_stage_name_1", "Suspicious") %}
+                                         {% set stage_comment = i18n.get("radiographic_stage_comment_1", "Tooth shape preserved but sporadic deviations: slightly blunted root tip, surface irregular/rough, slightly altered tooth structure. Continued radiographic monitoring and clinical evaluations are recommended.") %}
+                                         {% set stage_class = "stage-1" %}
+                                     {% elif radio_score >= 3 and radio_score <= 5 %}
+                                         {% set stage_name = i18n.get("radiographic_stage_name_2", "Mild") %}
+                                         {% set stage_comment = i18n.get("radiographic_stage_comment_2", "Tooth shape preserved, slightly blunted root tip, surface irregular/rough, slightly altered tooth structure. Extraction is not usually needed at this stage but regular monitoring is essential to assess structural changes or progression. Measuring gingival recession can help track disease progression.") %}
+                                         {% set stage_class = "stage-2" %}
+                                     {% elif radio_score >= 6 and radio_score <= 9 %}
+                                         {% set stage_name = i18n.get("radiographic_stage_name_3", "Moderate") %}
+                                         {% set stage_comment = i18n.get("radiographic_stage_comment_3", "Tooth shape largely preserved, intra-alveolar tooth part is not wider than the clinical crown, obviously blunted root tip, surface irregular/rough, moderately altered tooth structure. Treatment planning should include follow-up radiographs and may require extraction of teeth that are painful, nonvital, or structurally compromised.") %}
+                                         {% set stage_class = "stage-3" %}
+                                     {% else %} {# score >= 10 #}
+                                         {% set stage_name = i18n.get("radiographic_stage_name_4", "Severe") %}
+                                         {% set stage_comment = i18n.get("radiographic_stage_comment_4", "Loss of tooth shape, intra-alveolar tooth part is wider than the clinical crown, surface obviously irregular/rough, severely altered tooth structure. Extraction is often recommended, specially once supragingival lesions, alveolitis, osteomyelitis, tooth fractures, and extensive resorption of the reserve crown and root are detectable radiographically. The decision should be based on the veterinarian's clinical judgment, integrating both radiographic and clinical findings, with particular attention to a thorough dental pain assessment. Incisor extraction, when indicated, has a favorable prognosis and can significantly improve the horse's welfare.") %}
+                                         {% set stage_class = "stage-4" %}
+                                     {% endif %}
+                                     <div class="stage-header">
+                                         <!-- MODIFIED: Only show stage name -->
+                                         <h4 class="stage-label {{ stage_class }}">{{ stage_name }}</h4>
+                                         <span class="findings-text {{ stage_class }}">{{ stage_name }}</span>
+                                     </div>
+                                     <div class="interpretive-comment">
+                                         <p class="comment-text {{ stage_class }}">{{ stage_comment }}</p>
+                                     </div>
+                                 {% else %}
+                                     <div class="stage-header">
+                                         <!-- MODIFIED: Only show stage name (or placeholder) -->
+                                         <h4 class="stage-label">{{ i18n.get("radiographic_stage_name_none", "Not available") }}</h4>
+                                         <span class="findings-text">{{ i18n.get("radiographic_stage_name_none", "Not available") }}</span>
+                                     </div>
+                                     <div class="interpretive-comment">
+                                         <p class="comment-text">{{ i18n.get("radiographic_stage_comment_none", "Not available") }}</p>
+                                     </div>
+                                 {% endif %}
+                             </div>
+                         </div>
+                         <!-- END: Radiographic Interpretation Section -->
+
+                         <!-- Nou bloc d'Anàlisi Entropia del ROI (NOW AFTER RADIOGRAPHIC) -->
                          <div class="entropy-analysis">
                              <h3>{{ i18n.get("entropy_analysis_title", "Anàlisi Entropia del ROI") }}</h3>
                              <div class="entropy-metric">
@@ -399,7 +462,6 @@
                              </div>
                          </div>
                         
-                         
                      </section>
 
                  </div>
@@ -476,6 +538,10 @@
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('diagnosis-form');
             
+            // Define max scores using Jinja - prevents JS syntax issues with linters
+            const MAX_CLINICAL_SCORE = {{ config.MAX_RAW_SCORES.clinical }};
+            const MAX_RADIO_SCORE = {{ config.MAX_RAW_SCORES.radio }};
+            
             if (form) {
                 form.addEventListener('submit', function(e) {
                     e.preventDefault(); // Prevent traditional submission
@@ -520,20 +586,23 @@
             function updateResultsView(results) {
                 // Update scores
                 document.querySelector('.score-item:nth-child(1) p').textContent = 
-                    `${results.puntuacio_clinica} / {{ config.MAX_RAW_SCORES.clinical }}`;
+                    `${results.puntuacio_clinica} / ${MAX_CLINICAL_SCORE}`;
                 document.querySelector('.score-item:nth-child(1) .score-bar').style.width = 
-                    `${(results.puntuacio_clinica / {{ config.MAX_RAW_SCORES.clinical }} * 100)}%`;
+                    `${(results.puntuacio_clinica / MAX_CLINICAL_SCORE * 100)}%`;
                 
-                document.querySelector('.score-item:nth-child(2) p').textContent = 
-                    `${results.puntuacio_radio} / {{ config.MAX_RAW_SCORES.radio }}`;
-                document.querySelector('.score-item:nth-child(2) .score-bar').style.width = 
-                    `${(results.puntuacio_radio / {{ config.MAX_RAW_SCORES.radio }} * 100)}%`;
+                // Target the radiographic score item specifically (using the new class or :nth-child)
+                const radioScoreItem = document.querySelector('.score-item.radiographic-section') || document.querySelector('.score-item:nth-child(2)');
+                radioScoreItem.querySelector('p').textContent = 
+                    `${results.puntuacio_radio} / ${MAX_RADIO_SCORE}`;
+                radioScoreItem.querySelector('.score-bar').style.width = 
+                    `${(results.puntuacio_radio / MAX_RADIO_SCORE * 100)}%`;
                 
                 // Ensure digital score item has the digital-section class
-                document.querySelector('.score-item:nth-child(3)').classList.add('digital-section');
-                document.querySelector('.score-item:nth-child(3) p').textContent = 
+                const digitalScoreItem = document.querySelector('.score-item.digital-section') || document.querySelector('.score-item:nth-child(3)');
+                digitalScoreItem.classList.add('digital-section'); // Ensure class is present
+                digitalScoreItem.querySelector('p').textContent = 
                     `${results.puntuacio_digital} / 10`;
-                document.querySelector('.score-item:nth-child(3) .score-bar').style.width = 
+                digitalScoreItem.querySelector('.score-bar').style.width = 
                     `${(results.puntuacio_digital / 10 * 100)}%`;
                 
                 // Update entropy - show the post-processed value (DistEn2D/2)
@@ -546,7 +615,7 @@
                 const digitalScore = results.puntuacio_digital;
                 const stageLabel = document.querySelector('.clinical-stage .stage-label');
                 const findingsText = document.querySelector('.clinical-stage .findings-text');
-                const commentText = document.querySelector('.interpretive-comment .comment-text');
+                const commentText = document.querySelector('.clinical-stage .interpretive-comment .comment-text');
                 
                 // Remove all previous stage classes
                 stageLabel.classList.remove('stage-0', 'stage-1', 'stage-2', 'stage-3', 'stage-4');
@@ -554,44 +623,90 @@
                 commentText.classList.remove('stage-0', 'stage-1', 'stage-2', 'stage-3', 'stage-4');
                 
                 // Set new stage based on digital score
-                let stageNum, stageFindingsText, stageCommentText, stageClass;
+                let digitalStageNum, digitalStageFindingsText, digitalStageCommentText, digitalStageClass;
                 
                 if (digitalScore === 0) {
-                    stageNum = 0;
-                    stageFindingsText = "{{ i18n.get('clinical_findings_0', 'No findings, healthy') }}";
-                    stageCommentText = "{{ i18n.get('interpretive_comment_0', 'Clinical normality. Subclinical disease cannot be ruled out. Radiographic assesment is recommended in older horses (more than 20 years)') }}";
-                    stageClass = 'stage-0';
+                    digitalStageNum = 0;
+                    digitalStageFindingsText = {{ i18n.get('clinical_findings_0', 'No findings, healthy') | tojson }};
+                    digitalStageCommentText = {{ i18n.get('interpretive_comment_0', 'Clinical normality. Subclinical disease cannot be ruled out. Radiographic assesment is recommended in older horses (more than 20 years)') | tojson }};
+                    digitalStageClass = 'stage-0';
                 } else if (digitalScore >= 1 && digitalScore <= 2) {
-                    stageNum = 1;
-                    stageFindingsText = "{{ i18n.get('clinical_findings_1', 'Suspicious') }}";
-                    stageCommentText = "{{ i18n.get('interpretive_comment_1', 'Minimal and non-specific signs. May be age-related. Clinical indicators such as gingival recession or gingivitis increase the risk of underlying disease and should prompt further monitoring. Radiographic assesment is advised.') }}";
-                    stageClass = 'stage-1';
+                    digitalStageNum = 1;
+                    digitalStageFindingsText = {{ i18n.get('clinical_findings_1', 'Suspicious') | tojson }};
+                    digitalStageCommentText = {{ i18n.get('interpretive_comment_1', 'Minimal and non-specific signs. May be age-related. Clinical indicators such as gingival recession or gingivitis increase the risk of underlying disease and should prompt further monitoring. Radiographic assesment is advised.') | tojson }};
+                    digitalStageClass = 'stage-1';
                 } else if (digitalScore >= 3 && digitalScore <= 5) {
-                    stageNum = 2;
-                    stageFindingsText = "{{ i18n.get('clinical_findings_2', 'Mild') }}";
-                    stageCommentText = "{{ i18n.get('interpretive_comment_2', 'Presence of clear clinical signs but localized. Radiographic assesment is recommended to stage the lesions.') }}";
-                    stageClass = 'stage-2';
+                    digitalStageNum = 2;
+                    digitalStageFindingsText = {{ i18n.get('clinical_findings_2', 'Mild') | tojson }};
+                    digitalStageCommentText = {{ i18n.get('interpretive_comment_2', 'Presence of clear clinical signs but localized. Radiographic assesment is recommended to stage the lesions.') | tojson }};
+                    digitalStageClass = 'stage-2';
                 } else if (digitalScore >= 6 && digitalScore <= 9) {
-                    stageNum = 3;
-                    stageFindingsText = "{{ i18n.get('clinical_findings_3', 'Moderate') }}";
-                    stageCommentText = "{{ i18n.get('interpretive_comment_3', 'Multiple clinical signs with moderate intensity. Suggestive of disease progression. Radiographic assesment is strongly recommended to evaluate lesion severity and progression') }}";
-                    stageClass = 'stage-3';
-                } else if (digitalScore >= 10) {
-                    stageNum = 4;
-                    stageFindingsText = "{{ i18n.get('clinical_findings_4', 'Severe') }}";
-                    stageCommentText = "{{ i18n.get('interpretive_comment_4', 'Generalized and severe clinical involvement. Common findings include gingival swelling, fistulae, and bite angle not correlated with age. Radiological assessment is essential at this stage to accurately characterize lesion severity, as the extent of radiographic changes and associated pain may warrant extraction of the affected teeth.') }}";
-                    stageClass = 'stage-4';
+                    digitalStageNum = 3;
+                    digitalStageFindingsText = {{ i18n.get('clinical_findings_3', 'Moderate') | tojson }};
+                    digitalStageCommentText = {{ i18n.get('interpretive_comment_3', 'Multiple clinical signs with moderate intensity. Suggestive of disease progression. Radiographic assesment is strongly recommended to evaluate lesion severity and progression') | tojson }};
+                    digitalStageClass = 'stage-3';
+                } else { // >= 10
+                    digitalStageNum = 4;
+                    digitalStageFindingsText = {{ i18n.get('clinical_findings_4', 'Severe') | tojson }};
+                    digitalStageCommentText = {{ i18n.get('interpretive_comment_4', 'Generalized and severe clinical involvement. Common findings include gingival swelling, fistulae, and bite angle not correlated with age. Radiological assessment is essential at this stage to accurately characterize lesion severity, as the extent of radiographic changes and associated pain may warrant extraction of the affected teeth.') | tojson }};
+                    digitalStageClass = 'stage-4';
                 }
                 
-                // Update the DOM elements
-                stageLabel.textContent = `{{ i18n.get("clinical_stage_label", "Clinical Stage") }}: ${stageNum}`;
-                stageLabel.classList.add(stageClass);
-                findingsText.textContent = stageFindingsText;
-                findingsText.classList.add(stageClass);
-                commentText.textContent = stageCommentText;
-                commentText.classList.add(stageClass);
+                // Update the digital score DOM elements
+                stageLabel.textContent = `{{ i18n.get("clinical_stage_label", "Clinical Stage") }}: ${digitalStageNum}`;
+                stageLabel.classList.add(digitalStageClass); // Add new class
+                findingsText.textContent = digitalStageFindingsText;
+                findingsText.classList.add(digitalStageClass); // Add new class
+                commentText.textContent = digitalStageCommentText;
+                commentText.classList.add(digitalStageClass); // Add new class
                 
-                // Update interpretation
+                // --- START: Update Radiographic Interpretation Section ---
+                const radioScore = results.puntuacio_radio;
+                const radioSection = document.querySelector('.radiographic-interpretation-section');
+                const radioStageLabel = radioSection.querySelector('.stage-label');
+                const radioFindingsText = radioSection.querySelector('.findings-text');
+                const radioCommentText = radioSection.querySelector('.comment-text');
+
+                // Remove previous classes first
+                radioStageLabel.className = 'stage-label'; // Reset classes
+                radioFindingsText.className = 'findings-text'; // Reset classes
+                radioCommentText.className = 'comment-text'; // Reset classes
+                
+                let radioStageName, radioStageComment, radioStageClass;
+
+                if (radioScore === 0) {
+                    radioStageName = {{ i18n.get('radiographic_stage_name_0', 'Normal') | tojson }};
+                    radioStageComment = {{ i18n.get('radiographic_stage_comment_0', 'No abnormal radiological findings. However, the first pathological changes may begin on the palatal/lingual side and may not yet be visible. In older horses or in the presence of clinical signs, periodic radiographic monitoring is advised.') | tojson }};
+                    radioStageClass = 'stage-0';
+                } else if (radioScore >= 1 && radioScore <= 2) {
+                    radioStageName = {{ i18n.get('radiographic_stage_name_1', 'Suspicious') | tojson }};
+                    radioStageComment = {{ i18n.get('radiographic_stage_comment_1', 'Tooth shape preserved but sporadic deviations: slightly blunted root tip, surface irregular/rough, slightly altered tooth structure. Continued radiographic monitoring and clinical evaluations are recommended.') | tojson }};
+                    radioStageClass = 'stage-1';
+                } else if (radioScore >= 3 && radioScore <= 5) {
+                    radioStageName = {{ i18n.get('radiographic_stage_name_2', 'Mild') | tojson }};
+                    radioStageComment = {{ i18n.get('radiographic_stage_comment_2', 'Tooth shape preserved, slightly blunted root tip, surface irregular/rough, slightly altered tooth structure. Extraction is not usually needed at this stage but regular monitoring is essential to assess structural changes or progression. Measuring gingival recession can help track disease progression.') | tojson }};
+                    radioStageClass = 'stage-2';
+                } else if (radioScore >= 6 && radioScore <= 9) {
+                    radioStageName = {{ i18n.get('radiographic_stage_name_3', 'Moderate') | tojson }};
+                    radioStageComment = {{ i18n.get('radiographic_stage_comment_3', 'Tooth shape largely preserved, intra-alveolar tooth part is not wider than the clinical crown, obviously blunted root tip, surface irregular/rough, moderately altered tooth structure. Treatment planning should include follow-up radiographs and may require extraction of teeth that are painful, nonvital, or structurally compromised.') | tojson }};
+                    radioStageClass = 'stage-3';
+                } else { // >= 10
+                    radioStageName = {{ i18n.get('radiographic_stage_name_4', 'Severe') | tojson }};
+                    radioStageComment = {{ i18n.get('radiographic_stage_comment_4', "Loss of tooth shape, intra-alveolar tooth part is wider than the clinical crown, surface obviously irregular/rough, severely altered tooth structure. Extraction is often recommended, specially once supragingival lesions, alveolitis, osteomyelitis, tooth fractures, and extensive resorption of the reserve crown and root are detectable radiographically. The decision should be based on the veterinarian's clinical judgment, integrating both radiographic and clinical findings, with particular attention to a thorough dental pain assessment. Incisor extraction, when indicated, has a favorable prognosis and can significantly improve the horse's welfare.") | tojson }};
+                    radioStageClass = 'stage-4';
+                }
+
+                // Update the radiographic interpretation DOM elements
+                // MODIFIED: Only set the stage name, not the full label text
+                radioStageLabel.textContent = radioStageName;
+                radioStageLabel.classList.add(radioStageClass); // Add new class
+                radioFindingsText.textContent = radioStageName;
+                radioFindingsText.classList.add(radioStageClass); // Add new class
+                radioCommentText.textContent = radioStageComment;
+                radioCommentText.classList.add(radioStageClass); // Add new class
+                // --- END: Update Radiographic Interpretation Section ---
+
+                // Update overall interpretation
                 document.querySelector('.interpretation-text').textContent = results.interpretacio;
             }
             
