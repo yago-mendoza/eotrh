@@ -119,6 +119,39 @@
             margin-top: 20px; /* Add some space above */
             background-color: #f8f9fa; /* Match other sections */
         }
+        
+        /* Styling for the new radiograph warning */
+        .warning-message {
+            background-color: #fff9e6; /* Lighter yellow */
+            border: 1px solid #ffeeba; /* Yellow border */
+            color: #856404; /* Dark yellow text */
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px; /* Space below */
+            font-size: 0.95em; /* Slightly smaller text */
+        }
+
+        .warning-message h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #856404; /* Match text color */
+            font-size: 1.1em; /* Slightly larger heading */
+        }
+
+        .warning-message ol,
+        .warning-message ul {
+            margin-left: 25px; /* Indentation */
+            padding-left: 0; /* Remove default padding if any */
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .warning-message p {
+            margin-bottom: 10px; /* Spacing between paragraphs */
+        }
+        .warning-message p:last-child {
+            margin-bottom: 0; /* No extra space after the last paragraph */
+        }
     </style>
 </head>
 <body>
@@ -159,6 +192,20 @@
                             {{ explanations.upload }} <!-- Texto viene del contexto -->
                         </p>
                     </header>
+                    
+                    <!-- START: Radiograph Recommendation Warning -->
+                    <div class="warning-message">
+                        <h4>{{ i18n.get("radiograph_warning_title", "Important recommendation for radiographs") }}</h4>
+                        <p>{{ i18n.get("radiograph_warning_intro", "To ensure consistency and enhance diagnostic accuracy, it is strongly recommended that users acquire radiographs following a standardized methodology. The Hemisphere positioning model suggests obtaining three specific projections per patient:") }}</p>
+                        <ol>
+                            <li>{{ i18n.get("radiograph_warning_proj1", "Lateral view (90°/0°) – for general assessment of the oral structures.") }}</li>
+                            <li>{{ i18n.get("radiograph_warning_proj2", "Dorsoventral intraoral oblique (0°/+45°) – for focused evaluation of the maxillary incisors.") }}</li>
+                            <li>{{ i18n.get("radiograph_warning_proj3", "Ventrodorsal intraoral oblique (0°/−80°) – for detailed assessment of the mandibular incisors.") }}</li>
+                        </ol>
+                        <p>{{ i18n.get("radiograph_warning_conclusion", "Adhering to this protocol ensures optimal image quality and supports a more accurate diagnosis.") }}</p>
+                    </div>
+                    <!-- END: Radiograph Recommendation Warning -->
+                    
                     <input type="file" id="image" name="image" accept="image/jpeg, image/png, image/bmp, image/tiff" required class="hidden-input">
                     <label for="image" class="upload-area" id="upload-zone">
                         <img src="{{ url_for('static', path='img/icon-upload.svg') }}" alt="Upload Icon" class="upload-icon">
@@ -186,6 +233,24 @@
                             {{ explanations.roi }}
                         </p>
                     </header>
+                    
+                    <!-- START: ROI Selection Warning -->
+                    <div class="warning-message">
+                        <h4>{{ i18n.get("roi_warning_title", "How should the user select the ROIs?") }}</h4>
+                        <p>{{ i18n.get("roi_warning_intro", "To ensure consistency and diagnostic validity in the automatic analysis, users must manually select two Regions of Interest (ROIs):") }}</p>
+                        <ul>
+                            <li>{{ i18n.get("roi_warning_tooth101", "The first upper right incisor (tooth 101)") }}</li>
+                            <li>{{ i18n.get("roi_warning_tooth201", "The first upper left incisor (tooth 201)") }}</li>
+                        </ul>
+                        <p>{{ i18n.get("roi_warning_triadan", "These designations follow the modified Triadan system for equine dental nomenclature.") }}</p>
+                        <p>{{ i18n.get("roi_warning_roi_intro", "Each ROI should:") }}</p>
+                        <ul>
+                            <li>{{ i18n.get("roi_warning_roi_char1", "Cover the largest possible area of both the tooth crown and the tooth root") }}</li>
+                            <li>{{ i18n.get("roi_warning_roi_char2", "Be delimited by four high-radiodensity anatomical borders, ensuring precision and comparability in texture analysis") }}</li>
+                        </ul>
+                    </div>
+                    <!-- END: ROI Selection Warning -->
+                    
                     <div class="editor-layout">
                         <aside class="roi-toolbar">
                              <button type="button" id="tool-select" class="tool-button active" title="Select/Move (S)">
