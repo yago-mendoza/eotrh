@@ -13,15 +13,15 @@ def get_clinical_options() -> Dict[str, List[Tuple[str, int]]]:
     return {
         "fistulae": [
             ("No fistulae", 0),
-            ("1 purulent and up to 3 serous", 1),
+            ("1 purulent or up to 3 serous", 1),
             ("2-3 purulent or 4-6 serous", 2),
             (">3 purulent or >6 serous", 3),
         ],
         "gingival_recession": [
             ("No gingival recession", 0),
-            ("<1/3 of root exposed", 1),
-            ("<2/3 of root exposed", 2),
-            ("Entire root exposed", 3),
+            ("<1/3 of the root exposed", 1),
+            ("<2/3 of the root exposed", 2),
+            ("Whole root exposed", 3),
         ],
         "subgingival_bulbous_enlargement": [
              ("No", 0),
@@ -30,14 +30,14 @@ def get_clinical_options() -> Dict[str, List[Tuple[str, int]]]:
          "gingivitis": [
             ("No gingivitis", 0),
             ("Focal", 1),
-            ("Diffuse", 2),
-            ("Bluish coloration", 3),
+            ("Widespread", 2),
+            ("Blueish color", 3),
         ],
         "bite_angle_not_correlated_with_age": [
              ("Normal or <15 years", 0),
-             ("15 years with pincer angle", 1),
-             (">15 years with intermediate angle", 2),
-             (">15 years with pincer angle", 3),
+             ("15 years and pincer-like*", 1),
+             ("Over 15 years old and bisection angle", 2),
+             ("Over 15 years old and pincer-like*", 3),
         ]
     }
 
@@ -55,24 +55,25 @@ def get_radiographic_options() -> Dict[str, List[Tuple[str, int]]]:
         ],
         "missing_or_extracted_teeths": [
             ("None", 0),
-            ("≥1 incisor lost", 1),
+            ("One or more incisors already missing/extracted", 1),
         ],
-         "tooth_shape": [ # Simplified text for clarity
+         "tooth_shape": [
             ("Regular", 0),
-            ("Partial conservation", 2), # NOTE: There was no score 1 here
-            ("Majority conservation", 3),
-            ("Complete loss", 4),
+            ("Preserved: slightly blunted root tip, enlargement of the periodontal space", 1),
+            ("Largely preserved: circumferential increase of the root tip or the more occlusal part of the tooth, intra-alveolar tooth part < clinical crown", 2),
+            ("Largely lost: intra-alveolar tooth part = clinical crown", 3),
+            ("Lost: intra-alveolar tooth part > clinical crown", 4),
         ],
-         "tooth_structure": [ # Simplified text
-            ("No findings", 0),
-            ("Mild", 1),
-            ("Moderate", 2),
-            ("Severe", 3),
+         "tooth_structure": [
+            ("No radiological findings", 0),
+            ("Mild: single area of increased radiolucency (up to max. 1/3 of the root width)", 1),
+            ("Moderate: multiple areas of increased radiolucency (up to max. 1/3) or two (up to 2/3)", 2),
+            ("Severe: large areas of increased radiolucency", 3),
         ],
-        "tooth_surface": [ # Simplified text
-             ("No findings", 0),
-            ("1 irregular area", 1),
-            ("2 irregularities / rough", 2),
-            ("Marked / collapse", 3),
+        "tooth_surface": [
+            ("No radiological findings", 0),
+            ("1 irregularity (up to max 1/3 root length)", 1),
+            ("2 irregularities/surface rough", 2),
+            ("Obviously irregular (surface slumps)/ rough", 3),
         ]
      }

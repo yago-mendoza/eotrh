@@ -152,7 +152,12 @@
                           {% for key, options_list in clinical_options.items() %}
                          <div class="form-group">
                              <label for="{{ key }}">{{ key.replace('_', ' ').capitalize() }}:
-                                <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('info_icon_tooltip', 'More information') }}">
+                                {% if key == 'bite_angle_not_correlated_with_age' %}
+                                    <img src="{{ url_for('static', path='img/icon-info.svg') }}"
+                                         class="info-icon"
+                                         alt="Info"
+                                         title="*Pincer like: large angle between the maxillary and mandibular corner incisors">
+                                {% endif %}
                              </label>
                              <select id="{{ key }}" name="{{ key }}" required class="score-select">
                                  {% for option_text, score in options_list %}
@@ -168,7 +173,12 @@
                           {% for key, options_list in radiographic_options.items() %}
                           <div class="form-group">
                               <label for="{{ key }}">{{ key.replace('_', ' ').capitalize() }}:
-                                 <img src="{{ url_for('static', path='img/icon-info.svg') }}" class="info-icon" alt="Info" title="{{ i18n.get('info_icon_tooltip', 'More information') }}">
+                                 {# Remove the icon entirely for radiographic signs #}
+                                 {# <img src="{{ url_for('static', path='img/icon-info.svg') }}"
+                                      class="info-icon"
+                                      alt="Info"
+                                      title="{{ i18n.get('info_icon_tooltip', 'More information') }}">
+                                 #}
                               </label>
                               <select id="{{ key }}" name="{{ key }}" required class="score-select">
                                   {% for option_text, score in options_list %}
