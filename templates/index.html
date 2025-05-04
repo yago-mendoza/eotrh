@@ -91,7 +91,6 @@
             padding: 10px;
             background-color: #fff;
             border-radius: 6px;
-            border-left: 4px solid #6c757d;
         }
         
         /* New border styles for specific sections */
@@ -399,9 +398,7 @@
                                  <p>{{ i18n.get("entropy_technical_note", "Mesurat segons Distribution Entropy 2D després de filtrat Normalize. Basat en Górski et al. (2022). Útil per detectar fases inicials i avançades d'EOTRH.") }}</p>
                              </div>
                          </div>
-                         
-                         
-
+                        
                          
                      </section>
 
@@ -562,7 +559,7 @@
                 if (digitalScore === 0) {
                     stageNum = 0;
                     stageFindingsText = "{{ i18n.get('clinical_findings_0', 'No findings, healthy') }}";
-                    stageCommentText = "{{ i18n.get('interpretive_comment_0', 'Clinical normality. Subclinical disease cannot be ruled out. Radiographic assesment is recommended in older horses (>20 years)') }}";
+                    stageCommentText = "{{ i18n.get('interpretive_comment_0', 'Clinical normality. Subclinical disease cannot be ruled out. Radiographic assesment is recommended in older horses (more than 20 years)') }}";
                     stageClass = 'stage-0';
                 } else if (digitalScore >= 1 && digitalScore <= 2) {
                     stageNum = 1;
