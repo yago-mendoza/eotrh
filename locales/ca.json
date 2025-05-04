@@ -4,7 +4,7 @@
     "progress_step2": "ROI Edit",
     "progress_step3": "Manual Data",
     "progress_step4": "Results",
-    "welcome_title": "Welcome to the EOTRH Diagnostic Assistant",
+    "welcome_title": "Welcome to EOTRH Watch",
     "upload_explanation": "This assistant will guide you through entering clinical signs, radiographic findings, and digital texture analysis to assess the risk of EOTRH. Start by uploading a radiograph.",
     "upload_prompt": "Drag the radiograph here or <strong>click to select</strong>",
     "upload_selected": "Selected file:",
