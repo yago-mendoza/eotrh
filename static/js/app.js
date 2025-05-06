@@ -757,10 +757,12 @@ document.addEventListener('DOMContentLoaded', () => {
              targetStepElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
              if (targetStepId === 'step-roi-editor' && AppState.imageDataUrl) {
-                 // If we're navigating to the ROI editor, make sure the canvas is initialized
-                 if (!canvas) {
-                     initializeRoiEditor(AppState.imageDataUrl);
-                 }
+                 // As per commit 81074e2, ensure editor is initialized/re-initialized.
+                 // RoiEditor.initialize handles disposing previous canvas if any.
+                 requestAnimationFrame(() => {
+                     console.log("[DEBUG] navigateStep: Calling RoiEditor.initialize for step-roi-editor with AppState.imageDataUrl:", AppState.imageDataUrl);
+                     RoiEditor.initialize(AppState.imageDataUrl);
+                 });
              }
          } else {
              console.error("Navigation Error: Target step element not found:", targetStepId);
