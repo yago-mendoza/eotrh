@@ -16,8 +16,8 @@ This FastAPI web application provides a diagnostic aid tool for Equine Odontocla
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/eortrh_diagnosis_app.git
-cd eortrh_diagnosis_app
+git clone https://github.com/yago-mendoza/eotrh.git
+cd eotrh
 ```
 
 2. Create a virtual environment:
