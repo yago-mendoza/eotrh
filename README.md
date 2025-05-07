@@ -301,7 +301,7 @@ If you run into problems while setting up or running the application, here are s
 
 ## 📄 License
 
-This project is shared under the MIT License. This license basically says you can use, copy, change, and share this software freely, even for commercial purposes, as long as you include the original copyright and license notice. You can find more details in a file named `LICENSE` that should be included with the project files.
+This project is shared under the MIT License. This license basically says you can use, copy, change, and share this software freely, even for commercial purposes, as long as you include the original copyright and license notice. You can find more details in a file named `LICENSE` that should be included with the project files. Original development repo: [https://github.com/yago-mendoza/eotrh](https://github.com/yago-mendoza/eotrh)
 
 ---
 
