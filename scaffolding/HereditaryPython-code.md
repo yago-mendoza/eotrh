@@ -249,10 +249,10 @@ class WelcomeWindow(QWidget):
 
         img = QLabel()
         try:
-            logo_path = "resources/logo.png"
+            logo_path = "resources/noulogo.png"
             logo_pixmap = QPixmap(logo_path)
             if not logo_pixmap.isNull():
-                logo_pixmap = logo_pixmap.scaled(300, 300, Qt.KeepAspectRatio, Qt.SmoothTranstooth_shapetion)
+                logo_pixmap = logo_pixmap.scaled(250, 250, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                 img.setPixmap(logo_pixmap)
                 img.setAlignment(Qt.AlignCenter)
                 layout.addWidget(img)
@@ -966,7 +966,7 @@ class MainWindow(QMainWindow):
         try:
             current_dir = os.path.dirname(os.path.abspath(__file__))
             project_root = os.path.dirname(current_dir)
-            logo_path = os.path.join(project_root, 'resources', 'logo.png')
+            logo_path = os.path.join(project_root, 'resources', 'noulogo.png')
             
             if not os.path.exists(logo_path):
                 error_label = QLabel(f"Error: Logo file not found at {logo_path}")
