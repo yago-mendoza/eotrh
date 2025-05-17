@@ -136,9 +136,9 @@ The manual clinical assessment layer of EOTRH Watch is based on a clinical scori
 | Gingivitis | Focal | 1 |
 |  | Widespread | 2 |
 |  | Blueish colour | 3 |
-| Bite angle not correlated with age | 15 years and pincer-like* | 1 |
+| Bite angle not correlated with age | 15 years and pincer-like | 1 |
 |  | Over 15 years old and bisection angle | 2 |
-|  | Over 15 years old and pincer-like* | 3 |
+|  | Over 15 years old and pincer-like | 3 |
 
 *Pincer-like= large angle between the maxillary and mandibular corner incisors*
 
@@ -561,9 +561,9 @@ Bite angle not
 correlated with
 age
 
-15 years and pincer-like*
+15 years and pincer-like
 Over 15 years old and bisection angle
-Over 15 years old and pincer-like*
+Over 15 years old and pincer-like
 
 1
 2

@@ -35,9 +35,9 @@ def get_clinical_options() -> Dict[str, List[Tuple[str, int]]]:
         ],
         "bite_angle_not_correlated_with_age": [
              ("Normal or <15 years", 0),
-             ("15 years and pincer-like*", 1),
+             ("15 years and pincer-like", 1),
              ("Over 15 years old and bisection angle", 2),
-             ("Over 15 years old and pincer-like*", 3),
+             ("Over 15 years old and pincer-like", 3),
         ]
     }
 
