@@ -16,7 +16,15 @@ Please understand: This tool is **only meant to help you think about possibiliti
 
 ---
 
-## 🛠️ Getting Prerequisite Tools
+## 🔗 How to Access EOTRH Watch
+
+To access the EOTRH Watch software, simply visit https://eotrh-software.onrender.com/ from any device with internet access. 🌐
+
+⚠️ Important: The page may take 1 to 1.5 minutes to fully load. During this time, avoid refreshing the page, as this can significantly slow down the loading process. 🚫🔄
+
+
+
+## 🛠️ Getting Prerequisite Tools for EOTRH Watch Installation
 
 Before you begin setting up the EOTRH Watch application, you'll need a few essential tools on your computer. This section guides you through installing Git (for downloading the project code), Python (the programming language for the tool, which includes pip for managing software packages), and Cursor (a code editor associated with `cursor.sh`).
 
