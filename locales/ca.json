@@ -68,7 +68,7 @@
 
     "entropy_analysis_title": "ROI Entropy Analysis",
     "disten_label": "2D Entropy Distance (DistEn2D)",
-    "entropy_interpretation": "This value indicates high irregularity in the tooth texture in the analyzed region. It can be an early indicator of morphological changes associated with EOTRH, even with minimal clinical signs.",
+    "entropy_interpretation": "This value reflects the degree of irregularity in the tooth texture within the analyzed region. Higher values indicate greater irregularity. It can serve as an early indicator of morphological changes associated with EOTRH, even with minimal clinical signs.",
     "more_info_link": "ℹ️ More information",
     "entropy_technical_note": "Measured using 2D Distribution Entropy after Normalize filtering. Based on Górski et al. (2022). Useful for detecting early and advanced stages of EOTRH.",
     
